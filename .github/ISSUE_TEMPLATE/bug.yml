@@ -1,0 +1,66 @@
+name: Bug Report
+description: Report a bug or issue
+title: "[Bug]: "
+labels: ["bug"]
+assignees:
+  - NoahIsADeveloper
+body:
+  - type: textarea
+    id: issue
+    attributes:
+      label: What happened?
+      description: Tell us what broke, and how it broke.
+      placeholder: Describe the issue, including any relevant error messages or behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: Tell us how we can recreate the issue.
+      placeholder: |
+        1. Open the game
+        2. Place a building
+        3. Game freezes
+    validations:
+      required: true
+  - type: textarea
+    id: modifications
+    attributes:
+      label: Client Modifications
+      description: Tell us any modifications to the client you were using
+      placeholder: Please state any clients or client modifications such as BloxStrap, any form of Exploits, Sober
+    validations:
+      required: true
+  - type: checkboxes
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - label: Computer
+        - label: Phone
+  # - type: input
+  #   id: session
+  #   attributes:
+  #     label: Session ID
+  #     placeholder: e.g. '516dc358-4c65-4f34-8322-f0602fb97b5c'
+  #   validations:
+  #     required: true
+  # - type: input
+  #   id: version
+  #   attributes:
+  #     label: Version ID
+  #     placeholder: e.g. '491'
+  #   validations:
+  #     required: true
+  - type: checkboxes
+    id: agreement
+    attributes:
+      label: Submission
+      options:
+        - label: I have checked the latest release (https://github.com/NoahIsADeveloper/Oceanworks/releases) to make sure my issue has not been fixed.
+          required: true
+        - label: I have searched the closed and open issues to make sure that this problem has not already been reported.
+          required: true
+        - label: I have stated any and all client modifications I may have used, such as BloxStrap, Exploits or Sober.
+          required: true

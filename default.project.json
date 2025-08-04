@@ -1,0 +1,94 @@
+{
+	"name": "your-project-name",
+	"emitLegacyScripts": false,
+
+	"tree": {
+		"$className": "DataModel",
+
+		"ReplicatedStorage": {
+			"$className": "ReplicatedStorage",
+
+			"Shared": {
+				"$className": "Folder",
+				"$path": "Source/Shared"
+			},
+
+			"Assets": {
+				"$className": "Folder",
+				"$path": "Assets"
+			}
+		},
+
+		"ServerScriptService": {
+			"$className": "ServerScriptService",
+
+			"Main": {
+				"$path": "Source/Server"
+			}
+		},
+
+		"ReplicatedFirst": {
+			"$className": "ReplicatedFirst",
+
+			"Main": {
+				"$path": "Source/Client"
+			}
+		},
+
+		"StarterPlayer": {
+			"$className": "StarterPlayer",
+			"$properties": {
+				"EnableMouseLockOption": false,
+				"LoadCharacterAppearance": false
+			}
+		},
+
+		"Players": {
+			"$className": "Players",
+			"$properties": {
+				"CharacterAutoLoads": false
+			}
+		},
+
+		"HttpService": {
+			"$className": "HttpService",
+			"$properties": {
+				"HttpEnabled": true
+			}
+		},
+
+		"Workspace": {
+			"$className": "Workspace",
+			"$properties": {
+				"FilteringEnabled": true,
+				"StreamingEnabled": false
+			}
+		},
+
+		"Lighting": {
+			"$className": "Lighting",
+			"$properties": {
+				"Ambient": [0, 0, 0],
+				"Brightness": 2,
+				"GlobalShadows": true,
+				"Outlines": false,
+				"Technology": "Future"
+			}
+		},
+
+		"SoundService": {
+			"$className": "SoundService",
+			"$properties": {
+				"RespectFilteringEnabled": true
+			}
+		},
+
+		"TextChatService": {
+			"$className": "TextChatService",
+			"$properties": {
+				"ChatVersion": "TextChatService",
+				"CreateDefaultCommands": false
+			}
+		}
+	}
+}
