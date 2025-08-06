@@ -1,1 +1,2 @@
-print("Hello world!")
+--!strict
+--!optimize 2

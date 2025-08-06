@@ -1,3 +1,6 @@
+--!strict
+--!optimize 2
+
 --[[
 
 Read up on

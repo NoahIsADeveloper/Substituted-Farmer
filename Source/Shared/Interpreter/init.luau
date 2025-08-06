@@ -1,1 +1,2 @@
-return "Hello, world!"
+--!strict
+--!optimize 2
