@@ -45,7 +45,7 @@ local TokenCharacters = {
 
 	["<"] = TokenKinds.Operator,
 	[">"] = TokenKinds.Operator,
-	["!"] = TokenKinds.Operator,
+	["!"] = TokenKinds.Operator,	-- Unary
 	[":"] = TokenKinds.Operator,
 	["."] = TokenKinds.Operator,
 
