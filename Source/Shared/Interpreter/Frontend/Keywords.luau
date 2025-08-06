@@ -2,7 +2,20 @@
 --!optimize 2
 
 return {
-	"local", "global", "function",
-	"if", "else", "for", "while",
+	"local",
+	"global",
+	"function",
+
+	"if",
+	"else",
+	"for",
+	"while",
 	"try",
+
+	"and",
+	"or",
+
+	"return",
+	"continue",
+	"break",
 }
