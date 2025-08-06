@@ -2,7 +2,7 @@
 --!optimize 2
 
 return {
-	-- Declaration
+	-- Declarations
 	"local",
 	"global",
 	"function",
