@@ -21,7 +21,7 @@ end
 
 local Lexer = {}
 
-function Lexer.tokenize(source: string): {Token.Token}
+function Lexer.tokenize(source: string): ({Token.Token})
 	local tokens = {} :: {Token.Token}
 
 	--note! i did it in such a smart way before but i forgot how
