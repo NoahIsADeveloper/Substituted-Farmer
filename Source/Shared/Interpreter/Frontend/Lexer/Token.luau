@@ -5,6 +5,7 @@ export type Token = {
 	value: string,
 	raw: string,
 	kind: number,
+	range: {number},
 }
 
 local TokenKinds = {
@@ -58,11 +59,12 @@ for index, value in pairs(TokenCharacters) do
 end
 
 return {
-	new = function(value: string, kind: number, raw: string): (Token)
+	new = function(value: string, kind: number, raw: string, start: number, finish: number): (Token)
 		return {
 			value = value,
 			raw = raw,
 			kind = kind,
+			range = {start, finish},
 		}
 	end,
 	kinds = {
