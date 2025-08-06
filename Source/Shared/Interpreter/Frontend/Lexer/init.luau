@@ -23,9 +23,39 @@ local Lexer = {}
 
 function Lexer.tokenize(source: string): ({Token.Token})
 	local tokens = {} :: {Token.Token}
+	local index = 1
 
-	--note! i did it in such a smart way before but i forgot how
-	--		and i can't check it cuz it's blocked :/
+	local function at(): string
+		return source:sub(index, index)
+	end
+
+	local function eat(): string
+		local previous = source:sub(index, index)
+		index += 1
+		return previous
+	end
+
+	local function shiftUntilInterupt(interupt: (at: string, last: string) -> boolean): string
+		local start = index
+		local value = ""
+		local last = ""
+
+		while index <= source:len() and not interupt(at(), last) do
+			last = eat()
+			value ..= last
+		end
+
+		return value, start, index - 1
+	end
+
+	while source:len() > index do
+		local character = at()
+
+		local start = index
+		local tokenType = Token.fromCharacter[character]
+
+		if not tokenType and whitespace(character) then eat(); continue end
+	end
 
 	return tokens
 end
