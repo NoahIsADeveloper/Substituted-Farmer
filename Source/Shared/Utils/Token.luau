@@ -149,13 +149,4 @@ local Module = {
 	fromKind = FromKind,
 }
 
-return setmetatable(Module, {
-	__index = function(self: any, key: any): (any)
-		return
-			rawget(self, key) or
-			rawget(FromCharacter, key) or
-			rawget(FromType, key) or
-			rawget(FromKind, key) or
-			rawget(FromKeyword, key)
-	end
-})
+return Module
