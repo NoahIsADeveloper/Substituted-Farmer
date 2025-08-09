@@ -47,7 +47,6 @@ function Lexer.tokenize(source: string): ({Tokens.Token})
 			value ..= last
 		end
 
-		print(interupt(at(), last), at(), last)
 		return value, start, index - 1
 	end
 
@@ -86,8 +85,11 @@ function Lexer.tokenize(source: string): ({Tokens.Token})
 		end
 
 		-- // Multi character
-		--TODO: compound assign + comparisons (>= <=)
-		if tokenKind == Tokens.fromType.Quote then
+		if tokenKind == Tokens.fromType.BinaryOperator then
+			addToken(Tokens.fromType.CompoundAssign, `{character}{eat()}`, `{character}{eat()}`, start, index - 1)
+		elseif tokenKind == Tokens.fromType.Compare or tokenKind == Tokens.fromType.Unary or tokenKind == Tokens.fromType.Assign then
+			addToken(Tokens.fromType.Compare, `{character}{eat()}`, `{character}{eat()}`, start, index - 1)
+		elseif tokenKind == Tokens.fromType.Quote then
 			local value, startIndex, finishIndex = shiftUntilInterupt(function(value, last)
 				return value == character and last ~= "\\"
 			end)
@@ -114,10 +116,9 @@ function Lexer.tokenize(source: string): ({Tokens.Token})
 					end
 				end
 
-				return not numeric(value) and value ~= "." and value ~= "_"
+				return not numeric(value) and value ~= "."
 			end)
-
-			local result = tonumber(value:gsub("_", "")) :: number
+			local result = tonumber(value) :: number
 			addToken(Tokens.fromType.Number, value, result, startIndex, finishIndex)
 		elseif alpha(character) then
 			local value, startIndex, finishIndex = shiftUntilInterupt(function(value)
