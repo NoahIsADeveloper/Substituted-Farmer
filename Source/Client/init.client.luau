@@ -8,5 +8,3 @@ print(Lexer.tokenize([[
 "Test"
 190823
 ]]))
-
-print(require(ReplicatedStorage:WaitForChild("Shared").Utils.Token).fromKind)
