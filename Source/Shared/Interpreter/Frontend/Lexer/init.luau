@@ -1,8 +1,6 @@
 --!strict
 --!optimize 2
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local Token = require(ReplicatedStorage.Shared.Utils.Token)
 local Tokens = require("../../Utils/Token")
 
 local function numeric(value: string): (boolean)
@@ -71,12 +69,12 @@ function Lexer.tokenize(source: string): ({Tokens.Token})
 				tokenKind ~= Tokens.fromType.Comment and	-- Tokenize Comments
 				not (
 					(
-						tokenKind == Token.fromType.BinaryOperator or	-- Compound assign
-						tokenKind == Token.fromType.Compare or			-- Comparisons (>= <=)
-						tokenKind == Token.fromType.Assign or			-- ==
-						tokenKind == Token.fromType.Unary				-- !=
+						tokenKind == Tokens.fromType.BinaryOperator or	-- Compound assign
+						tokenKind == Tokens.fromType.Compare or			-- Comparisons (>= <=)
+						tokenKind == Tokens.fromType.Assign or			-- ==
+						tokenKind == Tokens.fromType.Unary				-- !=
 					) and
-					Tokens.fromCharacter[at()] == Token.fromType.Assign
+					Tokens.fromCharacter[at()] == Tokens.fromType.Assign
 				)
 			then
 				addToken(tokenKind, character, character, start, start)
