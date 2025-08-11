@@ -88,14 +88,15 @@ function Lexer.tokenize(source: string): ({Tokens.Token})
 		elseif tokenKind == Tokens.fromType.Compare or tokenKind == Tokens.fromType.Unary or tokenKind == Tokens.fromType.Assign then
 			addToken(Tokens.fromType.Compare, `{character}{eat()}`, `{character}{eat()}`, start, index - 1)
 		elseif tokenKind == Tokens.fromType.Quote then
+			--TODO: better escape characters
 			local value, startIndex, finishIndex = shiftUntilInterupt(function(value, last)
 				return value == character and last ~= "\\"
 			end)
-			--TODO: janky way to get raw string, also needs better (working) escape
+			-- fuck you it works
 			addToken(Tokens.fromType.String, `{character}{value}{character}`, value, startIndex - 1, finishIndex + 1)
 			eat()
 		elseif tokenKind == Tokens.fromType.Comment then
-			--TODO: store the comments somewhere!
+			--TODO: store the comments somewhere instead of sinking it!
 			--		parser will be cancer though
 			shiftUntilInterupt(function(value)
 				return value == character
