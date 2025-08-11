@@ -3,6 +3,10 @@
 
 local AST = require("../Utils/AST")
 local Token = require("../Utils/Token")
+local Statements
+if not Statements then
+	Statements = require("@self/Statements") :: any
+end
 
 local Parser = {} :: Parser
 export type Parser = typeof(setmetatable({} :: {
@@ -11,6 +15,7 @@ export type Parser = typeof(setmetatable({} :: {
 	tokens: {Token.Token},
 	index: number,
 
+	ParseStatement: (self: Parser) -> (AST.Statement),
 	notEoF: (self: Parser) -> (boolean),
 	expect: (self: Parser, expects: Token.TokenKind) -> (Token.Token),
 	next: (self: Parser) -> (Token.Token),
@@ -61,6 +66,17 @@ function Parser:at(): (Token.Token)
 	return self.tokens[self.index]
 end
 
+function Parser:ParseStatement(): (AST.Statement)
+	if
+		self:at().kind == Token.fromType.Local or
+		self:at().kind == Token.fromType.Global
+	then
+		Statements:VariableDeclaration(self)
+	end
+
+	return nil :: any
+end
+
 function Parser.new(tokens: {Token.Token}): (Parser)
 	local object =  setmetatable({
 		tokens = tokens or {},
@@ -74,9 +90,13 @@ function Parser.parse(tokens: {Token.Token}): (AST.Program)
 	local object = Parser.new(tokens)
 
 	local program = {
-		kind = "Program",
+		kind = AST.fromType.Program,
 		body = {},
 	} :: AST.Program
+
+	while object:notEoF() do
+		table.insert(program.body, object:ParseStatement())
+	end
 
 	return program
 end
