@@ -31,11 +31,20 @@ export type NodeType =
 	| "Property"
 
 export type Statement = {
-	kind: NodeType
+	kind: NodeType,
 }
+
+export type Program = {
+	kind: "Program",
+	body: {Statement},
+} & Statement
 
 export type Expression = {} & Statement
 
 export type Literal = {
-	value: any?
+	value: any?,
 } & Expression
+
+local Module = {}
+
+return Module
