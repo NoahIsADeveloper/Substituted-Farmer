@@ -1,9 +1,7 @@
 --!strict
 --!optimize 2
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local Token = require(ReplicatedStorage.Shared.Utils.Token)
-local Tokens = require("../../Utils/Token")
+local Token = require("./Utils/Token")
 
 local function numeric(value: string): (boolean)
 	return value:match("^[0-9]+$") ~= nil
@@ -23,8 +21,8 @@ end
 
 local Lexer = {}
 
-function Lexer.tokenize(source: string): ({Tokens.Token})
-	local tokens = {} :: {Tokens.Token}
+function Lexer.tokenize(source: string): ({Token.Token})
+	local tokens = {} :: {Token.Token}
 	local index = 1
 
 	local function at(): string
@@ -51,14 +49,14 @@ function Lexer.tokenize(source: string): ({Tokens.Token})
 	end
 
 	local function addToken(kind: number, raw: string, value: any, start: number, finish: number)
-		table.insert(tokens, Tokens.new(kind, raw, value, start, finish))
+		table.insert(tokens, Token.new(kind, raw, value, start, finish))
 	end
 
 	while source:len() > index do
 		local character = at()
 
 		local start = index
-		local tokenKind = Tokens.fromCharacter[character]
+		local tokenKind = Token.fromCharacter[character]
 
 		if not tokenKind and whitespace(character) then eat(); continue end
 
@@ -67,8 +65,8 @@ function Lexer.tokenize(source: string): ({Tokens.Token})
 			eat()
 			--TODO: whoever wrote this should die in rouge lineage
 			if
-				tokenKind ~= Tokens.fromType.Quote and		-- Tokenize Strings
-				tokenKind ~= Tokens.fromType.Comment and	-- Tokenize Comments
+				tokenKind ~= Token.fromType.Quote and		-- Strings
+				tokenKind ~= Token.fromType.Comment and		-- Comments
 				not (
 					(
 						tokenKind == Token.fromType.BinaryOperator or	-- Compound assign
@@ -76,7 +74,7 @@ function Lexer.tokenize(source: string): ({Tokens.Token})
 						tokenKind == Token.fromType.Assign or			-- ==
 						tokenKind == Token.fromType.Unary				-- !=
 					) and
-					Tokens.fromCharacter[at()] == Token.fromType.Assign
+					Token.fromCharacter[at()] == Token.fromType.Assign
 				)
 			then
 				addToken(tokenKind, character, character, start, start)
@@ -85,24 +83,25 @@ function Lexer.tokenize(source: string): ({Tokens.Token})
 		end
 
 		-- // Multi character
-		if tokenKind == Tokens.fromType.BinaryOperator then
-			addToken(Tokens.fromType.CompoundAssign, `{character}{eat()}`, `{character}{eat()}`, start, index - 1)
-		elseif tokenKind == Tokens.fromType.Compare or tokenKind == Tokens.fromType.Unary or tokenKind == Tokens.fromType.Assign then
-			addToken(Tokens.fromType.Compare, `{character}{eat()}`, `{character}{eat()}`, start, index - 1)
-		elseif tokenKind == Tokens.fromType.Quote then
-			local value, startIndex, finishIndex = shiftUntilInterupt(function(value, last)
+		if tokenKind == Token.fromType.BinaryOperator then
+			addToken(Token.fromType.CompoundAssign, `{character}{eat()}`, `{character}{eat()}`, start, index - 1)
+		elseif tokenKind == Token.fromType.Compare or tokenKind == Token.fromType.Unary or tokenKind == Token.fromType.Assign then
+			addToken(Token.fromType.Compare, `{character}{eat()}`, `{character}{eat()}`, start, index - 1)
+		elseif tokenKind == Token.fromType.Quote then
+			--TODO: better escape characters
+			local value, _, finishIndex = shiftUntilInterupt(function(value, last)
 				return value == character and last ~= "\\"
 			end)
-			--TODO: janky way to get raw string, also needs better (working) escape
-			addToken(Tokens.fromType.String, `{character}{value}{character}`, value, startIndex - 1, finishIndex + 1)
+			-- fuck you it works
+			addToken(Token.fromType.String, `{character}{value}{character}`, value, start, finishIndex + 1)
 			eat()
-		elseif tokenKind == Tokens.fromType.Comment then
-			--TODO: store the comments somewhere!
-			--		parser will be cancer though
-			shiftUntilInterupt(function(value)
+		elseif tokenKind == Token.fromType.Comment then
+			local value, _, finishIndex = shiftUntilInterupt(function(value)
 				return value == character
 			end)
 
+			-- fuck you it works (x2)
+			addToken(Token.fromType.Comment, `{character}{value}{character}`, value, start, finishIndex + 1)
 			eat()
 		elseif numeric(character) then
 			--TODO: kill yourself
@@ -119,17 +118,19 @@ function Lexer.tokenize(source: string): ({Tokens.Token})
 				return not numeric(value) and value ~= "."
 			end)
 			local result = tonumber(value) :: number
-			addToken(Tokens.fromType.Number, value, result, startIndex, finishIndex)
+			--TODO: better error handling
+			if not result then error(`Malformed number`) end
+			addToken(Token.fromType.Number, value, result, startIndex, finishIndex)
 		elseif alpha(character) then
 			local value, startIndex, finishIndex = shiftUntilInterupt(function(value)
 				return not alphaNumeric(value)
 			end)
 
-			addToken(Tokens.fromType.Identifier, value, value, startIndex, finishIndex)
+			addToken(Token.fromType.Identifier, value, value, startIndex, finishIndex)
 		end
 	end
 
-	addToken(Tokens.fromType.EoF, "", nil, 1, source:len())
+	addToken(Token.fromType.EoF, "", nil, 1, source:len())
 
 	return tokens
 end

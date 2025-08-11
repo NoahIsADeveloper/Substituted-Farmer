@@ -13,10 +13,11 @@ export type TokenType =
 	| "Identifier"
 	| "String"
 	| "Boolean"
-	| "Null"
+	| "None"
 
 	-- // Keywords
-	| "Declare"
+	| "Local"
+	| "Global"
 	| "Import"
 	| "Function"
 	| "If"
@@ -64,7 +65,7 @@ local TokenKindsArray = {
 	"Number", "Identifier", "String",
 	"Boolean", "Null",
 
-	"Declare", "Import", "Function",
+	"Local", "Global", "Import", "Function",
 	"If", "Else", "For",
 	"While", "Try", "Return",
 	"Break", "Continue", "Class",
@@ -111,7 +112,7 @@ local FromCharacter = {
 	["'"] = FromType.Quote,
 	["`"] = FromType.Quote,
 	["|"] = FromType.Comment,
-	-- ["\n"] = FromType.NewLine,
+	["\n"] = FromType.NewLine,
 } :: {[string]: TokenKind}
 
 local FromKeyword = {
@@ -128,9 +129,8 @@ local FromKeyword = {
 	["try"] = FromType.Try,
 	["and"] = FromType.BooleanOperator,
 	["or"] = FromType.BooleanOperator,
-	["local"] = FromType.Decalre,
-	["global"] = FromType.Decalre,
-	["export"] = FromType.Decalre,
+	["local"] = FromType.Local,
+	["global"] = FromType.Global,
 	["import"] = FromType.Import,
 } :: {[string]: TokenKind}
 
