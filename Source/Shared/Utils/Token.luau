@@ -13,7 +13,7 @@ export type TokenType =
 	| "Identifier"
 	| "String"
 	| "Boolean"
-	| "Null"
+	| "None"
 
 	-- // Keywords
 	| "Local"
