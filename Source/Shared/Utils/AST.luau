@@ -106,6 +106,7 @@ export type Expression = {} & Statement
 export type BinaryExpression = {
 	left: Expression,
 	right: Expression,
+	operator: string,
 } & Expression
 
 export type AssignmentExpression = {
