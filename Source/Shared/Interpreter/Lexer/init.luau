@@ -1,7 +1,7 @@
 --!strict
 --!optimize 2
 
-local Token = require("../Utils/Token")
+local Token = require("./Utils/Token")
 
 local function numeric(value: string): (boolean)
 	return value:match("^[0-9]+$") ~= nil

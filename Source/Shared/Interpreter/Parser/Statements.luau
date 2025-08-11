@@ -1,8 +1,8 @@
 --!strict
 --!optimize 2
 
-local Token = require("../../Utils/Token")
-local AST = require("../../Utils/AST")
+local Token = require("../Utils/Token")
+local AST = require("../Utils/AST")
 local Parser = require("../Parser")
 
 local Statement = {}

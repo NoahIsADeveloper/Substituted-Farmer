@@ -1,8 +1,8 @@
 --!strict
 --!optimize 2
 
-local AST = require("../Utils/AST")
-local Token = require("../Utils/Token")
+local AST = require("./Utils/AST")
+local Token = require("./Utils/Token")
 local Statements
 if not Statements then
 	Statements = require("@self/Statements") :: any
