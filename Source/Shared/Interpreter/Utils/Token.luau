@@ -132,6 +132,9 @@ local FromKeyword = {
 	["local"] = FromType.Local,
 	["global"] = FromType.Global,
 	["import"] = FromType.Import,
+	["true"] = FromType.Boolean,
+	["false"] = FromType.Boolean,
+	["null"] = FromType.None,
 } :: {[string]: TokenKind}
 
 local Module = {
