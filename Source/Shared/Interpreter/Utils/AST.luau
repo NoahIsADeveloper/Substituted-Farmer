@@ -126,6 +126,7 @@ export type MemberExpression = {
 } & Expression
 
 export type Literal = { value: any } & Expression
+export type NoneLiteral = {} & Literal
 
 export type BooleanLiteral = {
 	value: boolean,
@@ -137,10 +138,6 @@ export type NumericLiteral = {
 
 export type StringLiteral = {
 	value: string,
-} & Literal
-
-export type NoneLiteral = {
-	value: nil,
 } & Literal
 
 export type ObjectLiteral = {
