@@ -4,9 +4,7 @@
 local AST = require("./Utils/AST")
 local Token = require("./Utils/Token")
 local Statements
-if not Statements then
-	Statements = require("@self/Statements") :: any
-end
+local Expressions
 
 local Parser = {} :: Parser
 export type Parser = typeof(setmetatable({} :: {
@@ -16,6 +14,7 @@ export type Parser = typeof(setmetatable({} :: {
 	index: number,
 
 	ParseStatement: (self: Parser) -> (AST.Statement),
+	ParseExpression: (self: Parser) -> (AST.Statement),
 	notEoF: (self: Parser) -> (boolean),
 	expect: (self: Parser, expects: Token.TokenKind) -> (Token.Token),
 	next: (self: Parser) -> (Token.Token),
@@ -28,7 +27,7 @@ export type Parser = typeof(setmetatable({} :: {
 Parser.__index = Parser
 
 function Parser:notEoF(): (boolean)
-	return self:at().kind == Token.fromType.EoF
+	return self:at().kind ~= Token.fromType.EoF
 end
 
 function Parser:next(): (Token.Token)
@@ -71,10 +70,14 @@ function Parser:ParseStatement(): (AST.Statement)
 		self:at().kind == Token.fromType.Local or
 		self:at().kind == Token.fromType.Global
 	then
-		Statements:VariableDeclaration(self)
+		return Statements:VariableDeclaration(self)
 	end
 
-	return nil :: any
+	return self:ParseExpression()
+end
+
+function Parser:ParseExpression(): (AST.Statement)
+	return Expressions:AdditiveExpression(self)
 end
 
 function Parser.new(tokens: {Token.Token}): (Parser)
@@ -82,6 +85,14 @@ function Parser.new(tokens: {Token.Token}): (Parser)
 		tokens = tokens or {},
 		index = 1,
 	}, Parser) :: any
+
+	if not Statements then
+		Statements = require("@self/Statements") :: any
+	end
+
+	if not Expressions then
+		Expressions = require("@self/Expressions") :: any
+	end
 
 	return object
 end
