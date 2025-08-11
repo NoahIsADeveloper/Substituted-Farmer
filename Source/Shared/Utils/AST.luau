@@ -66,15 +66,94 @@ export type Program = {
 export type VariableDeclaration = {
 	immutable: boolean,
 	global: boolean,
-	identifier: string,
+	identifier: Identifier,
 	value: Expression?,
+} & Statement
+
+export type FunctionDeclaration = {
+	parameters: {Identifier},
+	body: {Statement},
+	name: Identifier?,
+} & Statement
+
+export type IfStatement = {
+	condition: Expression,
+	alternate: {Statement}?,
+	body: {Statement},
+	name: Identifier,
+} & Statement
+
+export type TryStatement = {
+	alternate: {Statement}?,
+	body: {Statement},
+	symbol: Identifier,
+} & Statement
+
+export type ReturnStatement = {
+	arguments: {Expression}?,
+} & Statement
+
+export type ContinueStatement = {
+
+} & Statement
+
+export type BreakStatement = {
+
 } & Statement
 
 export type Expression = {} & Statement
 
-export type Literal = {
-	value: any,
+export type BinaryExpression = {
+	left: Expression,
+	right: Expression,
 } & Expression
+
+export type AssignmentExpression = {
+	target: Expression,
+	value: Expression,
+} & Expression
+
+export type CallExpression = {
+	arguments: {Identifier},
+	caller: FunctionDeclaration,
+} & Expression
+
+export type MemberExpression = {
+	property: Identifier | Expression,
+	object: ObjectLiteral,
+	computed: boolean,
+} & Expression
+
+export type Literal = { value: any } & Expression
+
+export type BooleanLiteral = {
+	value: boolean,
+} & Literal
+
+export type NumericLiteral = {
+	value: number,
+} & Literal
+
+export type StringLiteral = {
+	value: string,
+} & Literal
+
+export type NoneLiteral = {
+	value: nil,
+} & Literal
+
+export type ObjectLiteral = {
+	value: {Property},
+} & Literal
+
+export type Identifier = {
+	value: string,
+} & Literal
+
+export type Property = {
+	value: Expression?,
+	key: any,
+} & Literal
 
 local Module = {
 	fromType = FromType,
