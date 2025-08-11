@@ -1,0 +1,3 @@
+--!strict
+--!optimize 2
+

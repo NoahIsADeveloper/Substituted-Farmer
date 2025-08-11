@@ -15,20 +15,22 @@ export type Parser = typeof(setmetatable({} :: {
 }, Parser))
 Parser.__index = Parser
 
-function Parser.parse(tokens)
+function Parser.new(tokens: {Token.Token}): (Parser)
 	local object =  setmetatable({
-		tokens = tokens,
+		tokens = tokens or {},
 		index = 1,
-	}, Parser)
+	}, Parser) :: any
+
+	return object
+end
+
+function Parser.parse(tokens: {Token.Token}): (AST.Program)
+	local object = Parser.new(tokens)
 
 	local program = {
 		kind = "Program",
-		body = {}
+		body = {},
 	} :: AST.Program
-
-	-- while not eof do
-	-- 	table.insert(program.body, object:ParseStatement())
-	-- end
 
 	return program
 end
