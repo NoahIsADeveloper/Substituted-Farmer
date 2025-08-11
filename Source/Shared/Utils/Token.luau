@@ -111,7 +111,7 @@ local FromCharacter = {
 	["'"] = FromType.Quote,
 	["`"] = FromType.Quote,
 	["|"] = FromType.Comment,
-	-- ["\n"] = FromType.NewLine,
+	["\n"] = FromType.NewLine,
 } :: {[string]: TokenKind}
 
 local FromKeyword = {

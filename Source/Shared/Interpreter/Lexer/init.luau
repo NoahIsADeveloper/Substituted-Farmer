@@ -1,7 +1,7 @@
 --!strict
 --!optimize 2
 
-local Token = require("../../Utils/Token")
+local Token = require("../Utils/Token")
 
 local function numeric(value: string): (boolean)
 	return value:match("^[0-9]+$") ~= nil
@@ -65,8 +65,8 @@ function Lexer.tokenize(source: string): ({Token.Token})
 			eat()
 			--TODO: whoever wrote this should die in rouge lineage
 			if
-				tokenKind ~= Token.fromType.Quote and		-- Tokenize Strings
-				tokenKind ~= Token.fromType.Comment and	-- Tokenize Comments
+				tokenKind ~= Token.fromType.Quote and		-- Strings
+				tokenKind ~= Token.fromType.Comment and		-- Comments
 				not (
 					(
 						tokenKind == Token.fromType.BinaryOperator or	-- Compound assign
@@ -89,19 +89,19 @@ function Lexer.tokenize(source: string): ({Token.Token})
 			addToken(Token.fromType.Compare, `{character}{eat()}`, `{character}{eat()}`, start, index - 1)
 		elseif tokenKind == Token.fromType.Quote then
 			--TODO: better escape characters
-			local value, startIndex, finishIndex = shiftUntilInterupt(function(value, last)
+			local value, _, finishIndex = shiftUntilInterupt(function(value, last)
 				return value == character and last ~= "\\"
 			end)
 			-- fuck you it works
-			addToken(Token.fromType.String, `{character}{value}{character}`, value, startIndex - 1, finishIndex + 1)
+			addToken(Token.fromType.String, `{character}{value}{character}`, value, start, finishIndex + 1)
 			eat()
 		elseif tokenKind == Token.fromType.Comment then
-			--TODO: store the comments somewhere instead of sinking it!
-			--		parser will be cancer though
-			shiftUntilInterupt(function(value)
+			local value, _, finishIndex = shiftUntilInterupt(function(value)
 				return value == character
 			end)
 
+			-- fuck you it works (x2)
+			addToken(Token.fromType.Comment, `{character}{value}{character}`, value, start, finishIndex + 1)
 			eat()
 		elseif numeric(character) then
 			--TODO: kill yourself
@@ -118,6 +118,8 @@ function Lexer.tokenize(source: string): ({Token.Token})
 				return not numeric(value) and value ~= "."
 			end)
 			local result = tonumber(value) :: number
+			--TODO: better error handling
+			if not result then error(`Malformed number`) end
 			addToken(Token.fromType.Number, value, result, startIndex, finishIndex)
 		elseif alpha(character) then
 			local value, startIndex, finishIndex = shiftUntilInterupt(function(value)
