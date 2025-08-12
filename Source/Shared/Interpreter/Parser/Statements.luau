@@ -16,6 +16,7 @@ function Statement:VariableDeclaration(parser: Parser.Parser)
 		return {
 			kind = AST.fromType.VariableDeclaration,
 			immutable = false,
+			identifier = identifier.value,
 			global = global,
 			value = parser:ParseExpression() :: any,
 		} :: AST.VariableDeclaration
@@ -24,6 +25,7 @@ function Statement:VariableDeclaration(parser: Parser.Parser)
 	return {
 		kind = AST.fromType.VariableDeclaration,
 		immutable = false,
+		identifier = identifier.value,
 		global = global,
 		value = nil :: any,
 	} :: AST.VariableDeclaration
