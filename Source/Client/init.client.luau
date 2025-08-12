@@ -6,7 +6,7 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Interpreter = require(Shared.Interpreter)
 
 local Source = [[
-35
+35 ^ 2 / 35
 ]]
 
 Interpreter:Interpret(Source)
