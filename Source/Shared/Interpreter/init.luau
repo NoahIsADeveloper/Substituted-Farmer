@@ -1,6 +1,6 @@
 --!strict
 --!optimize 2
-
+task.wait(.3)
 local Evaluation = require("@self/Evaluation")
 local Parser = require("@self/Parser")
 local Lexer = require("@self/Lexer")
@@ -14,7 +14,7 @@ function Module:Interpret(source: string): (Runtime.Value?)
 	local success, errorMessage = pcall(function()
 		tokens = Lexer.tokenize(source)
 		ast = Parser.parse(tokens)
-		result = Evaluation:Evaluate(ast)
+		result = Evaluation.evaluate(ast)
 	end)
 
 	if not success then warn(`Failed to execute {source} {debug.traceback(errorMessage)}`) end
