@@ -2,13 +2,11 @@
 --!optimize 2
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local Interpreter = ReplicatedStorage:WaitForChild("Shared").Interpreter
-local Lexer = require(Interpreter.Lexer)
-local Parser = require(Interpreter.Parser)
+local Shared = ReplicatedStorage:WaitForChild("Shared")
+local Interpreter = require(Shared.Interpreter)
 
 local Source = [[
-190823 + 89123
+3 ^ 2 + 3 * 4
 ]]
 
-print(Lexer.tokenize(Source))
-print(Parser.parse(Lexer.tokenize(Source)))
+Interpreter:Interpret(Source)
