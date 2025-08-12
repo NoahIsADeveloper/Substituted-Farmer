@@ -3,7 +3,9 @@
 
 export type TokenKind = number
 export type TokenType =
-	| string	-- // This fucking sucks but the linter is retarded as shit and I don't want warnings
+	| string
+
+	-- // Scary useless stuff
 	| "EoF"
 	| "NewLine"
 	| "Comment"
