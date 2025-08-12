@@ -140,7 +140,7 @@ local FromKeyword = {
 } :: {[string]: TokenKind}
 
 local Module = {
-	new = function(kind: TokenKind, value: string?, raw: string?, start: number, finish: number): (Token)
+	new = function(kind: TokenKind, raw: string?, value: string?, start: number, finish: number): (Token)
 		return {
 			kind = kind,
 			value = value,
