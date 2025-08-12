@@ -1,12 +1,16 @@
 --!strict
 --!optimize 2
 
+local Expressions
+
 local AST = require("./Utils/AST")
 local Values = require("./Utils/Runtime")
 
 local Evaluation = {}
 
 function Evaluation.evaluate(node: AST.Statement): (Values.Value)
+	if not Expressions then Expressions = require("@self/Expressions") :: any end
+
 	local kind: AST.NodeKind = node.kind
 
 	-- // Literals
@@ -14,6 +18,10 @@ function Evaluation.evaluate(node: AST.Statement): (Values.Value)
 		return Values:Number((node :: AST.NumericLiteral).value)
 	elseif kind == AST.fromType.StringLiteral then
 		return Values:Number((node :: AST.StringLiteral).value)
+
+	-- // Expressions
+	elseif kind == AST.fromType.BinaryExpression then
+		return Expressions:BinaryExpression(node :: AST.BinaryExpression)
 
 	-- // Program
 	elseif kind == AST.fromType.Program then
