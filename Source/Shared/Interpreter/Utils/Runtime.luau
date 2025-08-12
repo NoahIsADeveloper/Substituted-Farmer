@@ -3,6 +3,8 @@
 
 export type ValueKind = number
 export type ValueType =
+	| string
+
 	-- // Literals
 	| "NoneValue"
 	| "NumberValue"
@@ -54,5 +56,33 @@ local Module = {
 	fromType = FromType,
 	fromKind = FromKind,
 }
+
+function Module:None(): (NoneValue)
+	return {
+		kind = FromType.NoneValue,
+		value = nil,
+	}
+end
+
+function Module:Number(value: number): (NumberValue)
+	return {
+		kind = FromType.NumberValue,
+		value = value,
+	}
+end
+
+function Module:String(value: string): (StringValue)
+	return {
+		kind = FromType.StringValue,
+		value = value,
+	}
+end
+
+function Module:Boolean(value: boolean): (BooleanValue)
+	return {
+		kind = FromType.BooleanValue,
+		value = value,
+	}
+end
 
 return Module
