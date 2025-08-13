@@ -1,6 +1,7 @@
 --!strict
 --!optimize 2
 
+local Environment = require("../Environment")
 local AST = require("../Utils/AST")
 local Values = require("../Utils/Runtime")
 local Operators = require("../Utils/Operations")
@@ -9,9 +10,9 @@ local Evaluation = require("../Evaluation")
 
 local Expression = {}
 
-function Expression:BinaryExpression(node: AST.BinaryExpression): (Values.Value)
-	local left = Evaluation.evaluate(node.left) :: Values.Value
-	local right = Evaluation.evaluate(node.right) :: Values.Value
+function Expression:BinaryExpression(node: AST.BinaryExpression, environment: Environment.Environment): (Values.Value)
+	local left = Evaluation.evaluate(node.left, environment) :: Values.Value
+	local right = Evaluation.evaluate(node.right, environment) :: Values.Value
 	local operator = node.operator
 	local call = Operators[operator]
 
