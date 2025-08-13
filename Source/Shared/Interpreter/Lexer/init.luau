@@ -84,9 +84,9 @@ function Lexer.tokenize(source: string): ({Token.Token})
 
 		-- // Multi character
 		if tokenKind == Token.fromType.BinaryOperator then
-			addToken(Token.fromType.CompoundAssign, `{character}{eat()}`, `{character}{eat()}`, start, index - 1)
+			addToken(Token.fromType.CompoundAssign, `{character}{at()}`, `{character}{eat()}`, start, index - 1)
 		elseif tokenKind == Token.fromType.Compare or tokenKind == Token.fromType.Unary or tokenKind == Token.fromType.Assign then
-			addToken(Token.fromType.Compare, `{character}{eat()}`, `{character}{eat()}`, start, index - 1)
+			addToken(Token.fromType.Compare, `{character}{at()}`, `{character}{eat()}`, start, index - 1)
 		elseif tokenKind == Token.fromType.Quote then
 			--TODO: better escape characters
 			local value, _, finishIndex = shiftUntilInterupt(function(value, last)
