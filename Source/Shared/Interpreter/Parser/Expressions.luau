@@ -7,6 +7,26 @@ local Parser = require("../Parser")
 
 local Expression = {}
 
+function Expression:ComparisonExpression(parser: Parser.Parser): (AST.Expression)
+	local left = Expression:AdditiveExpression(parser)
+
+	while parser:at().kind == Token.fromType.Compare do
+		local operator = parser:eat().value
+		local right = Expression:AdditiveExpression(parser)
+
+		left = {
+			kind = AST.fromType.BinaryExpression,
+			range = {left.range[1], right.range[2]},
+
+			left = left,
+			right = right,
+			operator = operator,
+		} :: AST.BinaryExpression
+	end
+
+	return left
+end
+
 function Expression:AdditiveExpression(parser: Parser.Parser): (AST.Expression)
 	local left = Expression:MultiplicitaveExpression(parser)
 
@@ -16,6 +36,7 @@ function Expression:AdditiveExpression(parser: Parser.Parser): (AST.Expression)
 
 		left = {
 			kind = AST.fromType.BinaryExpression,
+			range = {left.range[1], right.range[2]},
 
 			left = left,
 			right = right,
@@ -35,6 +56,7 @@ function Expression:MultiplicitaveExpression(parser: Parser.Parser): (AST.Expres
 
 		left = {
 			kind = AST.fromType.BinaryExpression,
+			range = {left.range[1], right.range[2]},
 
 			left = left,
 			right = right,
@@ -54,6 +76,7 @@ function Expression:ExponentiationExpression(parser: Parser.Parser): (AST.Expres
 
 		left = {
 			kind = AST.fromType.BinaryExpression,
+			range = {left.range[1], right.range[2]},
 
 			left = left,
 			right = right,
@@ -68,16 +91,15 @@ function Expression:PrimaryExpression(parser: Parser.Parser): (AST.Expression)
 	local token = parser:at()
 
 	if token.kind == Token.fromType.Identifier then
-		return {kind = AST.fromType.Identifier, value = parser:eat().value} :: AST.Identifier
+		return {kind = AST.fromType.Identifier, value = token.value, range = parser:eat().range} :: AST.Identifier
 	elseif token.kind == Token.fromType.Number then
-		return {kind = AST.fromType.NumericLiteral, value = parser:eat().value} :: AST.NumericLiteral
+		return {kind = AST.fromType.NumericLiteral, value = token.value, range = parser:eat().range} :: AST.NumericLiteral
 	elseif token.kind == Token.fromType.String then
-		return {kind = AST.fromType.StringLiteral, value = parser:eat().value} :: AST.StringLiteral
+		return {kind = AST.fromType.StringLiteral, value = token.value, range = parser:eat().range} :: AST.StringLiteral
 	elseif token.kind == Token.fromType.Boolean then
-		return {kind = AST.fromType.BooleanLiteral, value = (parser:eat().value == "true")} :: AST.BooleanLiteral
+		return {kind = AST.fromType.BooleanLiteral, value = (token.value == "true"), range = parser:eat().range} :: AST.BooleanLiteral
 	elseif token.kind == Token.fromType.None then
-		parser:eat()
-		return {kind = AST.fromType.NoneLiteral} :: AST.NoneLiteral
+		return {kind = AST.fromType.NoneLiteral, range = parser:eat().range} :: AST.NoneLiteral
 	else
 		error("Unexpected token found during parsing")
 	end
