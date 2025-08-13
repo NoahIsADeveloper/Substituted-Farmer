@@ -77,7 +77,7 @@ function Parser:ParseStatement(): (AST.Statement)
 end
 
 function Parser:ParseExpression(): (AST.Statement)
-	return Expressions:AdditiveExpression(self)
+	return Expressions:ComparisonExpression(self)
 end
 
 function Parser.new(tokens: {Token.Token}): (Parser)
@@ -109,6 +109,7 @@ function Parser.parse(tokens: {Token.Token}): (AST.Program)
 		table.insert(program.body, object:ParseStatement())
 	end
 
+	program.range = {program.body[1].range[1], program.body[#program.body].range[2]}
 	return program
 end
 
