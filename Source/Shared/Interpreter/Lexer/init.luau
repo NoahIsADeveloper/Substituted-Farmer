@@ -130,7 +130,7 @@ function Lexer.tokenize(source: string): ({Token.Token})
 		end
 	end
 
-	addToken(Token.fromType.EoF, "", nil, 1, source:len())
+	addToken(Token.fromType.EoF, "End of file", nil, 1, source:len())
 
 	return tokens
 end
