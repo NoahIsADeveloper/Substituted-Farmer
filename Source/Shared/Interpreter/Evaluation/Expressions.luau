@@ -22,16 +22,12 @@ function Expression:BinaryExpression(node: AST.BinaryExpression): (Values.Value)
 				return Values:Number(result)
 			elseif type(result) == "boolean" then
 				return Values:Boolean(result)
-			else
-				warn("b")
 			end
 		elseif left.kind == Values.fromType.StringValue then
 			if operator == "+" then
 				return Values:String((left :: AST.StringLiteral).value .. (right :: AST.StringLiteral).value)
 			elseif operator:sub(1, 1) == ">" or operator:sub(1, 1) == "<" then
 				return Values:Boolean(Operators[operator]((left :: AST.StringLiteral).value, (right :: AST.StringLiteral).value))
-			else
-				warn("c")
 			end
 		end
 	end
