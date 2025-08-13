@@ -1,7 +1,7 @@
 --!strict
 --!optimize 2
-task.wait(.3)
-local Evaluation = require("@self/Evaluation")
+local Evaluation
+repeat Evaluation = require("@self/Evaluation") until task.wait() and Evaluation
 local Parser = require("@self/Parser")
 local Lexer = require("@self/Lexer")
 
