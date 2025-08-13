@@ -40,4 +40,18 @@ function Expression:BinaryExpression(node: AST.BinaryExpression, environment: En
 	error("nuh uh")
 end
 
+function Expression:BooleanExpression(node: AST.BooleanExpression, environment: Environment.Environment): (Values.Value)
+	local left = Evaluation.evaluate(node.left, environment) :: Values.Value
+	local right = Evaluation.evaluate(node.right, environment) :: Values.Value
+	local operator = node.operator
+
+	if operator == "and" then
+		return left.value and right.value
+	elseif operator == "or" then
+		return left.value or right.value
+	end
+
+	error("wuh uh")
+end
+
 return Expression

@@ -19,6 +19,7 @@ export type NodeType =
 
 	-- // Expressions
 	| "BinaryExpression"
+	| "BooleanExpression"
 	| "AssignmentExpression"
 	| "CallExpression"
 	| "MemberExpression"
@@ -39,8 +40,8 @@ local NodeKindsArray = {
 	"ReturnStatement", "ContinueStatement", "BreakStatement",
 	"ImportStatement",
 
-	"BinaryExpression", "AssignmentExpression", "CallExpression",
-	"MemberExpression",
+	"BinaryExpression", "BooleanExpression", "AssignmentExpression",
+	"CallExpression", "MemberExpression",
 
 	"BooleanLiteral", "NumericLiteral", "StringLiteral",
 	"NoneLiteral", "ObjectLiteral", "ArrayLiteral",
@@ -105,6 +106,12 @@ export type BreakStatement = {
 export type Expression = {} & Statement
 
 export type BinaryExpression = {
+	left: Expression,
+	right: Expression,
+	operator: string,
+} & Expression
+
+export type BooleanExpression = {
 	left: Expression,
 	right: Expression,
 	operator: string,

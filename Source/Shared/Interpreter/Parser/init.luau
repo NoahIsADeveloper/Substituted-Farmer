@@ -77,7 +77,7 @@ function Parser:ParseStatement(): (AST.Statement)
 end
 
 function Parser:ParseExpression(): (AST.Statement)
-	return Expressions:ComparisonExpression(self)
+	return Expressions:BooleanComparisonExpression(self)
 end
 
 function Parser.new(tokens: {Token.Token}): (Parser)

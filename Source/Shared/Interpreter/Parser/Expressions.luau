@@ -7,7 +7,27 @@ local Parser = require("../Parser")
 
 local Expression = {}
 
-function Expression:ComparisonExpression(parser: Parser.Parser): (AST.Expression)
+function Expression:BooleanComparisonExpression(parser: Parser.Parser): (AST.Expression)
+	local left = Expression:NumericComparisonExpression(parser)
+
+	while parser:at().kind == Token.fromType.BooleanOperator do
+		local operator = parser:eat().value
+		local right = Expression:NumericComparisonExpression(parser)
+
+		left = {
+			kind = AST.fromType.BooleanExpression,
+			range = {left.range[1], right.range[2]},
+
+			left = left,
+			right = right,
+			operator = operator,
+		} :: AST.BooleanExpression
+	end
+
+	return left
+end
+
+function Expression:NumericComparisonExpression(parser: Parser.Parser): (AST.Expression)
 	local left = Expression:AdditiveExpression(parser)
 
 	while parser:at().kind == Token.fromType.Compare do
