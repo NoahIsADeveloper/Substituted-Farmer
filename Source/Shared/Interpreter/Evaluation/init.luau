@@ -17,7 +17,7 @@ function Evaluation.evaluate(node: AST.Statement): (Values.Value)
 	if kind == AST.fromType.NumericLiteral then
 		return Values:Number((node :: AST.NumericLiteral).value)
 	elseif kind == AST.fromType.StringLiteral then
-		return Values:Number((node :: AST.StringLiteral).value)
+		return Values:String((node :: AST.StringLiteral).value)
 
 	-- // Expressions
 	elseif kind == AST.fromType.BinaryExpression then
