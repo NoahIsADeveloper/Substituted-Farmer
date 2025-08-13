@@ -10,6 +10,10 @@ local Evaluation = require("../Evaluation")
 local Statement = {}
 
 function Statement:VariableDeclaration(node: AST.VariableDeclaration, environment: Environment.Environment): ()
+	if node.global then
+		environment = environment:Resolve()
+	end
+
 	environment:DeclareVariable(
 		node.identifier.value,
 		if node.value then Evaluation.evaluate(node, environment) else Values:None(),
