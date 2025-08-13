@@ -10,25 +10,27 @@ local Evaluation = require("../Evaluation")
 local Expression = {}
 
 function Expression:BinaryExpression(node: AST.BinaryExpression): (Values.Value)
-	local left = Evaluation.evaluate(node.left)
-	local right = Evaluation.evaluate(node.right)
+	local left = Evaluation.evaluate(node.left) :: Values.Value
+	local right = Evaluation.evaluate(node.right) :: Values.Value
 	local operator = node.operator
+	local call = Operators[operator]
 
-	if left.kind == right.kind then
-		if left.kind == Values.fromType.NumberValue then
-			local result = Operators[operator]((left :: AST.NumericLiteral).value, (right :: AST.NumericLiteral).value)
+	assert(call, `error msg`)
+	assert(left.kind == right.kind, `error msg 2`)
 
-			if type(result) == "number" then
-				return Values:Number(result)
-			elseif type(result) == "boolean" then
-				return Values:Boolean(result)
-			end
-		elseif left.kind == Values.fromType.StringValue then
-			if operator == "+" then
-				return Values:String((left :: AST.StringLiteral).value .. (right :: AST.StringLiteral).value)
-			elseif operator:sub(1, 1) == ">" or operator:sub(1, 1) == "<" then
-				return Values:Boolean(Operators[operator]((left :: AST.StringLiteral).value, (right :: AST.StringLiteral).value))
-			end
+	if left.kind == Values.fromType.NumberValue then
+		local result = call(left.value, right.value)
+
+		if type(result) == "number" then
+			return Values:Number(result)
+		elseif type(result) == "boolean" then
+			return Values:Boolean(result)
+		end
+	elseif left.kind == Values.fromType.StringValue then
+		if operator == "+" then
+			return Values:String(left.value .. right.value)
+		elseif operator:sub(1, 1) == ">" or operator:sub(1, 1) == "<" then
+			return Values:Boolean(call(left.value, right.value))
 		end
 	end
 
