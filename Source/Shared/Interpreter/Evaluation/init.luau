@@ -2,6 +2,7 @@
 --!optimize 2
 
 local Expressions
+local Statements
 
 local Environment = require("./Environment")
 
@@ -12,6 +13,7 @@ local Evaluation = {}
 
 function Evaluation.evaluate(node: AST.Statement, environment: Environment.Environment): (Values.Value)
 	if not Expressions then Expressions = require("@self/Expressions") :: any end
+	if not Statements then Statements = require("@self/Statements") :: any end
 
 	local kind: AST.NodeKind = node.kind
 
@@ -24,6 +26,10 @@ function Evaluation.evaluate(node: AST.Statement, environment: Environment.Envir
 	-- // Expressions
 	elseif kind == AST.fromType.BinaryExpression then
 		return Expressions:BinaryExpression(node :: AST.BinaryExpression, environment)
+
+	-- // Statements
+	elseif kind == AST.fromType.VariableDeclaration then
+		return Statements:VariableDeclaration(node :: AST.VariableDeclaration, environment)
 
 	-- // Program
 	elseif kind == AST.fromType.Program then
