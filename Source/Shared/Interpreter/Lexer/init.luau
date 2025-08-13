@@ -126,7 +126,11 @@ function Lexer.tokenize(source: string): ({Token.Token})
 				return not alphaNumeric(value)
 			end)
 
-			addToken(Token.fromType.Identifier, value, value, startIndex, finishIndex)
+			if Token.fromKeyword[value] then
+				addToken(Token.fromKeyword[value], value, value, startIndex, finishIndex)
+			else
+				addToken(Token.fromType.Identifier, value, value, startIndex, finishIndex)
+			end
 		end
 	end
 

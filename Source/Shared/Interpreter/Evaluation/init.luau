@@ -22,12 +22,16 @@ function Evaluation.evaluate(node: AST.Statement, environment: Environment.Envir
 		return Values:Number((node :: AST.NumericLiteral).value)
 	elseif kind == AST.fromType.StringLiteral then
 		return Values:String((node :: AST.StringLiteral).value)
+	elseif kind == AST.fromType.BooleanLiteral then
+		return Values:Boolean((node :: AST.BooleanLiteral).value)
 	elseif kind == AST.fromType.Identifier then
 		return Environment:LookupVariable((node :: AST.Identifier).value)
 
 	-- // Expressions
 	elseif kind == AST.fromType.BinaryExpression then
 		return Expressions:BinaryExpression(node :: AST.BinaryExpression, environment)
+	elseif kind == AST.fromType.BooleanExpression then
+		return Expressions:BooleanExpression(node :: AST.BooleanExpression, environment)
 
 	-- // Statements
 	elseif kind == AST.fromType.VariableDeclaration then
@@ -45,7 +49,7 @@ function Evaluation.evaluate(node: AST.Statement, environment: Environment.Envir
 
 	-- // Fail
 	else
-		print(node)
+		print(node, AST.fromKind[node.kind])
 		error("Fail")
 	end
 end
