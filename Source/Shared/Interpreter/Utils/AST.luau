@@ -57,6 +57,7 @@ end
 
 export type Statement = {
 	kind: NodeKind,
+	range: {number},
 }
 
 export type Program = {
