@@ -24,6 +24,7 @@ function Module:Interpret(source: string, environment: Environment.Environment?)
 	if not success then warn(`Failed to execute {source} {debug.traceback(errorMessage)}`) end
 	print("Tokens:", tokens)
 	print("AST:", ast)
+	print("Environment:", environment)
 	print("Result:", result)
 
 	return result
