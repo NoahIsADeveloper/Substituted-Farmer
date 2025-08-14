@@ -15,8 +15,8 @@ function Statement:VariableDeclaration(node: AST.VariableDeclaration, environmen
 	end
 
 	environment:DeclareVariable(
-		node.identifier.value,
-		if node.value then Evaluation.evaluate(node, environment) else Values:None(),
+		node.identifier,
+		if node.value then Evaluation.evaluate(node.value, environment) else Values:None(),
 		node.immutable
 	)
 

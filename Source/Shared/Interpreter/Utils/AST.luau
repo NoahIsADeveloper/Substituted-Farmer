@@ -68,7 +68,7 @@ export type Program = {
 export type VariableDeclaration = {
 	immutable: boolean,
 	global: boolean,
-	identifier: Identifier,
+	identifier: string,
 	value: Expression?,
 } & Statement
 

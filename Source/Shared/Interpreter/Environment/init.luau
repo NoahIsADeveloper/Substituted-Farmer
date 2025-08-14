@@ -21,6 +21,7 @@ export type Environment = typeof(setmetatable({} :: {
 Environment.__index = Environment
 
 function Environment:DeclareVariable(name: string, value: Runtime.Value, immutable: boolean): ()
+	if not name then error(`Cannot declare variable without a name`) end
 	if self.variables[name] then error(`Cannot declare variable '{name}' as it already exists`) end
 
 	self.variables[name] = value
