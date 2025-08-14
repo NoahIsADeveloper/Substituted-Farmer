@@ -14,14 +14,15 @@ function Statement:VariableDeclaration(parser: Parser.Parser)
 	local identifier = parser:expect(Token.fromType.Identifier)
 
 	if parser:at().kind == Token.fromType.Assign then
-		finish = parser:eat().range[2]
+		parser:eat()
+		local value = parser:ParseExpression()
 		return {
 			kind = AST.fromType.VariableDeclaration,
 			immutable = false,
 			identifier = identifier.value,
 			global = global,
-			value = parser:ParseExpression() :: any,
-			range = {start, finish},
+			value = value :: any,
+			range = {start, value.range[2]},
 		} :: AST.VariableDeclaration
 	end
 
