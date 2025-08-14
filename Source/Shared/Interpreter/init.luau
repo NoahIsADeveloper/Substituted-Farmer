@@ -9,7 +9,7 @@ local Runtime = require("@self/Utils/Runtime")
 
 local Module = {}
 
-function Module:Interpret(source: string, environment: Environment.Environment?): (Runtime.Value?)
+function Module.interpret(source: string, environment: Environment.Environment?): (Runtime.Value?)
 	if not environment then
 		environment = Environment.new()
 	end
