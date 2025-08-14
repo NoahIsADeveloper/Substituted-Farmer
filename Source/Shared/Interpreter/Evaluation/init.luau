@@ -25,7 +25,7 @@ function Evaluation.evaluate(node: AST.Statement, environment: Environment.Envir
 	elseif kind == AST.fromType.BooleanLiteral then
 		return Values:Boolean((node :: AST.BooleanLiteral).value)
 	elseif kind == AST.fromType.Identifier then
-		return Environment:LookupVariable((node :: AST.Identifier).value)
+		return environment:LookupVariable((node :: AST.Identifier).value)
 
 	-- // Expressions
 	elseif kind == AST.fromType.BinaryExpression then
