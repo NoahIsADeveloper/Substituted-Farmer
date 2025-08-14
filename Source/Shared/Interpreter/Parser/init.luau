@@ -31,14 +31,15 @@ function Parser:notEoF(): (boolean)
 	return self:at().kind ~= Token.fromType.EoF
 end
 
+local function skip(token: Token.Token): (boolean)
+	return token.kind == Token.fromType.Comment or token.kind == Token.fromType.NewLine
+end
+
 function Parser:next(): (Token.Token)
 	self.index += 1
 	local token = self:at()
 
-	while
-		token.kind == Token.fromType.Comment or
-		token.kind == Token.fromType.NewLine
-	do
+	while skip(token) do
 		self.index += 1
 		token = self:at()
 	end
@@ -71,10 +72,7 @@ function Parser:after(): (Token.Token)
 	index += 1
 	local token = self.tokens[index]
 
-	while
-		token.kind == Token.fromType.Comment or
-		token.kind == Token.fromType.NewLine
-	do
+	while skip(token) do
 		index += 1
 		token = self.tokens[index]
 	end
@@ -83,17 +81,19 @@ function Parser:after(): (Token.Token)
 end
 
 function Parser:ParseStatement(): (AST.Statement)
+	if self:at().kind == Token.fromType.Identifier then
+		if self:after().kind == Token.fromType.Assign then
+			print("assignment")
+		elseif self:after().kind == Token.fromType.CompoundAssign then
+			print("compound assignment")
+		end
+	end
+
 	if
 		self:at().kind == Token.fromType.Local or
 		self:at().kind == Token.fromType.Global
 	then
 		return Statements:VariableDeclaration(self)
-	elseif
-		self:at().kind == Token.fromType.Identifier and
-		self:after().kind == Token.fromType.Assign or
-		self:after().kind == Token.fromType.CompoundAssign
-	then
-		print("assignment")
 	end
 
 	return self:ParseExpression()
