@@ -13,7 +13,7 @@ export type Parser = typeof(setmetatable({} :: {
 	tokens: {Token.Token},
 	index: number,
 
-	ParseStatement: (self: Parser) -> (AST.Statement),
+	ParseStatement: (self: Parser, fails: boolean?) -> (AST.Statement),
 	ParseExpression: (self: Parser) -> (AST.Statement),
 	notEoF: (self: Parser) -> (boolean),
 	expect: (self: Parser, expects: Token.TokenKind) -> (Token.Token),
@@ -80,20 +80,20 @@ function Parser:after(): (Token.Token)
 	return token
 end
 
-function Parser:ParseStatement(): (AST.Statement)
+function Parser:ParseStatement(fails: boolean?): (AST.Statement)
 	if self:at().kind == Token.fromType.Identifier then
 		if self:after().kind == Token.fromType.Assign then
 			return Statements:VariableAssignment(self)
 		elseif self:after().kind == Token.fromType.CompoundAssign then
 			return Statements:VariableCompoundAssignment(self)
 		end
-	elseif
-		self:at().kind == Token.fromType.Local or
-		self:at().kind == Token.fromType.Global
-	then
+	elseif self:at().kind == Token.fromType.Local or self:at().kind == Token.fromType.Global then
 		return Statements:VariableDeclaration(self)
+	elseif self:at().kind == Token.fromType.While then
+		return Statements:WhileStatement(self)
 	end
 
+	if fails then error(`i love oranges`) end
 	return self:ParseExpression()
 end
 

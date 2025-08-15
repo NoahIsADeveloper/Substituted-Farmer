@@ -12,6 +12,7 @@ export type NodeType =
 	| "FunctionDeclaration"
 	| "IfStatement"
 	| "ForStatement"
+	| "WhileStatement"
 	| "TryStatement"
 	| "ReturnStatement"
 	| "ContinueStatement"
@@ -37,8 +38,8 @@ export type NodeType =
 local NodeKindsArray = {
 	"Program", "VariableDeclaration", "VariableAssignment",
 	"FunctionDeclaration", "IfStatement", "ForStatement",
-	"TryStatement", "ReturnStatement", "ContinueStatement",
-	"BreakStatement", "ImportStatement",
+	"WhileStatement", "TryStatement", "ReturnStatement",
+	"ContinueStatement", "BreakStatement", "ImportStatement",
 
 	"BinaryExpression", "BooleanExpression",
 	"CallExpression", "MemberExpression",
@@ -84,6 +85,18 @@ export type FunctionDeclaration = {
 } & Statement
 
 export type IfStatement = {
+	condition: Expression,
+	alternate: {Statement}?,
+	body: {Statement},
+	name: Identifier,
+} & Statement
+
+--TODO: needs data
+export type ForStatement = {
+
+} & Statement
+
+export type WhileStatement = {
 	condition: Expression,
 	alternate: {Statement}?,
 	body: {Statement},

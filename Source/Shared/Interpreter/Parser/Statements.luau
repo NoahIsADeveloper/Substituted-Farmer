@@ -67,4 +67,41 @@ function Statement:VariableCompoundAssignment(parser: Parser.Parser): (AST.Varia
 	} :: any
 end
 
+function Statement:WhileStatement(parser: Parser.Parser): (AST.WhileStatement)
+	local start = parser:expect(Token.fromType.While).range[1]
+	parser:expect(Token.fromType.OpenParenthesis)
+	local condition = parser:ParseExpression()
+	parser:expect(Token.fromType.CloseParenthesis)
+	local body = Statement:ParseBlock(parser)
+	local alternate
+	local finish = body[#body].range[2]
+
+	if parser:at().kind == Token.fromType.Else then
+		parser:eat()
+		alternate = Statement:ParseBlock(parser)
+		finish = alternate[#alternate].range[2]
+	end
+
+	return {
+		kind = AST.fromType.WhileStatement,
+		condition = condition,
+		body = body,
+		alternate = alternate,
+		range = {start, finish}
+	} :: any
+end
+
+function Statement:ParseBlock(parser: Parser.Parser) : {AST.Statement}
+	local body: {AST.Statement} = {}
+	parser:expect(Token.fromType.OpenBrace)
+
+	while parser:at().kind ~= Token.fromType.CloseBrace do
+		local statement = parser:ParseStatement()
+		table.insert(body, statement)
+	end
+
+	parser:expect(Token.fromType.CloseBrace)
+	return body
+end
+
 return Statement

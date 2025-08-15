@@ -6,8 +6,11 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Interpreter = require(Shared:FindFirstChild("Interpreter")) :: typeof(require("./Shared/Interpreter"))
 
 local Source = [[
-local x = 30
-x += 2 * 2
+while (true) {
+	123
+} else {
+	456
+}
 ]]
 
 Interpreter.interpret(Source)
