@@ -44,6 +44,9 @@ function Evaluation.evaluate(node: AST.Statement, environment: Environment.Envir
 		return Statements:VariableAssignment(node :: AST.VariableAssignment, environment)
 	elseif kind == AST.fromType.WhileStatement then
 		return Statements:WhileStatement(node :: AST.WhileStatement, environment)
+	elseif kind == AST.fromType.IfStatement then
+		return Statements:IfStatement(node :: AST.IfStatement, environment)
+
 
 	-- // Expressions
 	elseif kind == AST.fromType.BinaryExpression then

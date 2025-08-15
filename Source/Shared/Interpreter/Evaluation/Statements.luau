@@ -32,6 +32,16 @@ function Statement:VariableAssignment(node: AST.VariableAssignment, environment:
 	return Values:None()
 end
 
+function Statement:IfStatement(node: AST.IfStatement, environment: Environment.Environment): (Values.NoneValue)
+	if Evaluation.evaluate(node.condition, environment).value then
+		Evaluation.evaluateBody(node.body, environment)
+	elseif node.alternate then
+		Evaluation.evaluateBody(node.alternate, environment)
+	end
+
+	return Values:None()
+end
+
 function Statement:WhileStatement(node: AST.WhileStatement, environment: Environment.Environment): (Values.NoneValue)
 	local running = true
 	while running and Evaluation.evaluate(node.condition, environment).value do
