@@ -83,9 +83,9 @@ end
 function Parser:ParseStatement(): (AST.Statement)
 	if self:at().kind == Token.fromType.Identifier then
 		if self:after().kind == Token.fromType.Assign then
-			print("assignment")
+			return Statements:VariableAssignment(self)
 		elseif self:after().kind == Token.fromType.CompoundAssign then
-			print("compound assignment")
+			return Statements:VariableCompoundAssignment(self)
 		end
 	end
 

@@ -121,7 +121,7 @@ function Expression:PrimaryExpression(parser: Parser.Parser): (AST.Expression)
 	elseif token.kind == Token.fromType.None then
 		return {kind = AST.fromType.NoneLiteral, range = parser:eat().range} :: AST.NoneLiteral
 	else
-		error("Unexpected token found during parsing")
+		error(`Unexpected token found during parsing, {AST.fromKind[token.kind]}`)
 	end
 end
 

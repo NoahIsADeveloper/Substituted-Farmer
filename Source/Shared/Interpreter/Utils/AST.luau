@@ -8,6 +8,7 @@ export type NodeType =
 	-- // Statements
 	| "Program"
 	| "VariableDeclaration"
+	| "VariableAssignment"
 	| "FunctionDeclaration"
 	| "IfStatement"
 	| "ForStatement"
@@ -20,7 +21,6 @@ export type NodeType =
 	-- // Expressions
 	| "BinaryExpression"
 	| "BooleanExpression"
-	| "AssignmentExpression"
 	| "CallExpression"
 	| "MemberExpression"
 
@@ -35,12 +35,12 @@ export type NodeType =
 	| "Property"
 
 local NodeKindsArray = {
-	"Program", "VariableDeclaration", "FunctionDeclaration",
-	"IfStatement", "ForStatement", "TryStatement",
-	"ReturnStatement", "ContinueStatement", "BreakStatement",
-	"ImportStatement",
+	"Program", "VariableDeclaration", "VariableAssignment",
+	"FunctionDeclaration", "IfStatement", "ForStatement",
+	"TryStatement", "ReturnStatement", "ContinueStatement",
+	"BreakStatement", "ImportStatement",
 
-	"BinaryExpression", "BooleanExpression", "AssignmentExpression",
+	"BinaryExpression", "BooleanExpression",
 	"CallExpression", "MemberExpression",
 
 	"BooleanLiteral", "NumericLiteral", "StringLiteral",
@@ -70,6 +70,11 @@ export type VariableDeclaration = {
 	global: boolean,
 	identifier: string,
 	value: Expression?,
+} & Statement
+
+export type VariableAssignment = {
+	identifier: string,
+	value: Expression,
 } & Statement
 
 export type FunctionDeclaration = {
@@ -115,11 +120,6 @@ export type BooleanExpression = {
 	left: Expression,
 	right: Expression,
 	operator: string,
-} & Expression
-
-export type AssignmentExpression = {
-	target: Expression,
-	value: Expression,
 } & Expression
 
 export type CallExpression = {

@@ -15,13 +15,15 @@ function Module.interpret(source: string, environment: Environment.Environment?)
 	end
 
 	local tokens, ast, result
-	local success, errorMessage = pcall(function()
+	local function run()
 		tokens = Lexer.tokenize(source)
 		ast = Parser.parse(tokens)
 		result = Evaluation.evaluate(ast, environment :: Environment.Environment)
-	end)
+	end
 
-	if not success then warn(`Failed to execute {source} {debug.traceback(errorMessage)}`) end
+	local success: boolean?, errorMessage: string? = pcall(run)
+
+	if not success then warn(`Failed to execute {source} {debug.traceback(errorMessage, 0)}`) end
 	print("Tokens:", tokens)
 	print("AST:", ast)
 	print("Environment:", environment)
