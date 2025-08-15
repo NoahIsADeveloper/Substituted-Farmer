@@ -40,13 +40,6 @@ body:
         - label: Computer
         - label: Phone
   # - type: input
-  #   id: session
-  #   attributes:
-  #     label: Session ID
-  #     placeholder: e.g. '516dc358-4c65-4f34-8322-f0602fb97b5c'
-  #   validations:
-  #     required: true
-  # - type: input
   #   id: version
   #   attributes:
   #     label: Version ID
