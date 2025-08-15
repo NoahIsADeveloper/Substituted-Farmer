@@ -91,6 +91,16 @@ function Parser:ParseStatement(fails: boolean?): (AST.Statement)
 		return Statements:VariableDeclaration(self)
 	elseif self:at().kind == Token.fromType.While then
 		return Statements:WhileStatement(self)
+	elseif self:at().kind == Token.fromType.Break then
+		return {
+			kind = AST.fromType.BreakStatement,
+			range = self:eat().range,
+		} :: AST.BreakStatement
+	elseif self:at().kind == Token.fromType.Continue then
+		return {
+			kind = AST.fromType.ContinueStatement,
+			range = self:eat().range,
+		} :: AST.BreakStatement
 	end
 
 	if fails then error(`i love oranges`) end

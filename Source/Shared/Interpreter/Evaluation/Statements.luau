@@ -32,4 +32,21 @@ function Statement:VariableAssignment(node: AST.VariableAssignment, environment:
 	return Values:None()
 end
 
+function Statement:WhileStatement(node: AST.WhileStatement, environment: Environment.Environment): (Values.NoneValue)
+	local running = true
+	while running and Evaluation.evaluate(node.condition, environment).value do
+		for _, statement in pairs(node.body) do
+			if statement.kind == AST.fromType.ContinueStatement then break end
+			if statement.kind == AST.fromType.BreakStatement then running = false; break end
+			Evaluation.evaluate(statement, environment:new())
+		end
+	end
+
+	if node.alternate then
+		Evaluation.evaluateBody(node.alternate, environment:new())
+	end
+
+	return Values:None()
+end
+
 return Statement

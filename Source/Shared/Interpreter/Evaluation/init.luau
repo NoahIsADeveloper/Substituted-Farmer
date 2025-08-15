@@ -11,6 +11,16 @@ local Values = require("./Utils/Runtime")
 
 local Evaluation = {}
 
+function Evaluation.evaluateBody(body: {AST.Statement}, environment: Environment.Environment): (Values.Value)
+	local lastValue = Values:None()
+
+	for _, node: AST.Statement in pairs(body) do
+		lastValue = Evaluation.evaluate(node, environment)
+	end
+
+	return lastValue
+end
+
 function Evaluation.evaluate(node: AST.Statement, environment: Environment.Environment): (Values.Value)
 	if not Expressions then Expressions = require("@self/Expressions") :: any end
 	if not Statements then Statements = require("@self/Statements") :: any end
@@ -32,6 +42,8 @@ function Evaluation.evaluate(node: AST.Statement, environment: Environment.Envir
 		return Statements:VariableDeclaration(node :: AST.VariableDeclaration, environment)
 	elseif kind == AST.fromType.VariableAssignment then
 		return Statements:VariableAssignment(node :: AST.VariableAssignment, environment)
+	elseif kind == AST.fromType.WhileStatement then
+		return Statements:WhileStatement(node :: AST.WhileStatement, environment)
 
 	-- // Expressions
 	elseif kind == AST.fromType.BinaryExpression then
@@ -41,13 +53,7 @@ function Evaluation.evaluate(node: AST.Statement, environment: Environment.Envir
 
 	-- // Program
 	elseif kind == AST.fromType.Program then
-		local lastEvaluated: Values.Value = Values:None()
-
-		for _, statement in pairs((node :: AST.Program).body) do
-			lastEvaluated = Evaluation.evaluate(statement, environment)
-		end
-
-		return lastEvaluated
+		return Evaluation.evaluateBody((node :: AST.Program).body, environment)
 
 	-- // Fail
 	else
