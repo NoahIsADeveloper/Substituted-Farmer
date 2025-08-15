@@ -31,6 +31,7 @@ end
 function Environment:AssignVariable(name: string, value: Runtime.Value): ()
 	local environment = self:Resolve(name)
 
+	--TODO: better error text
 	if not environment then error(`ts shldnt b posble 🥀`) end
 	if table.find(environment.constants, name) then error(`Cannot reassign variable '{name}' it is immutable.`) end
 	if not environment.variables[name] then error(`Cannot assign variable '{name}' it does not exist`) end
@@ -41,6 +42,7 @@ end
 function Environment:LookupVariable(name: string): (Runtime.Value)
 	local environment = self:Resolve(name)
 
+	--TODO: better error text
 	if not environment then error(`wtaf is ts 🪦`) end
 
 	return environment.variables[name] or Runtime:None()

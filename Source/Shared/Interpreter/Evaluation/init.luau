@@ -34,8 +34,8 @@ function Evaluation.evaluate(node: AST.Statement, environment: Environment.Envir
 		return Values:String((node :: AST.StringLiteral).value)
 	elseif kind == AST.fromType.BooleanLiteral then
 		return Values:Boolean((node :: AST.BooleanLiteral).value)
-	elseif kind == AST.fromType.Identifier then
-		return environment:LookupVariable((node :: AST.Identifier).value)
+	elseif kind == AST.fromType.IdentifierLiteral then
+		return environment:LookupVariable((node :: AST.IdentifierLiteral).value)
 
 	-- // Statements
 	elseif kind == AST.fromType.VariableDeclaration then
@@ -46,7 +46,6 @@ function Evaluation.evaluate(node: AST.Statement, environment: Environment.Envir
 		return Statements:WhileStatement(node :: AST.WhileStatement, environment)
 	elseif kind == AST.fromType.IfStatement then
 		return Statements:IfStatement(node :: AST.IfStatement, environment)
-
 
 	-- // Expressions
 	elseif kind == AST.fromType.BinaryExpression then
@@ -61,7 +60,7 @@ function Evaluation.evaluate(node: AST.Statement, environment: Environment.Envir
 	-- // Fail
 	else
 		print(node, AST.fromKind[node.kind])
-		error("Fail")
+		error(`Fail: ({node.range[1]}->{node.range[2]})`)
 	end
 end
 

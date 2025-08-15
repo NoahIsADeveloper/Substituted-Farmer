@@ -111,7 +111,7 @@ function Expression:PrimaryExpression(parser: Parser.Parser): (AST.Expression)
 	local token = parser:at()
 
 	if token.kind == Token.fromType.Identifier then
-		return {kind = AST.fromType.Identifier, value = token.value, range = parser:eat().range} :: AST.Identifier
+		return {kind = AST.fromType.IdentifierLiteral, value = token.value, range = parser:eat().range} :: AST.IdentifierLiteral
 	elseif token.kind == Token.fromType.Number then
 		return {kind = AST.fromType.NumericLiteral, value = token.value, range = parser:eat().range} :: AST.NumericLiteral
 	elseif token.kind == Token.fromType.String then

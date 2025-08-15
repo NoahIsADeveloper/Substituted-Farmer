@@ -32,7 +32,8 @@ export type NodeType =
 	| "NoneLiteral"
 	| "ObjectLiteral"
 	| "ArrayLiteral"
-	| "Identifier"
+	| "FunctionLiteral"
+	| "IdentifierLiteral"
 	| "Property"
 
 local NodeKindsArray = {
@@ -41,12 +42,12 @@ local NodeKindsArray = {
 	"WhileStatement", "TryStatement", "ReturnStatement",
 	"ContinueStatement", "BreakStatement", "ImportStatement",
 
-	"BinaryExpression", "BooleanExpression",
-	"CallExpression", "MemberExpression",
+	"BinaryExpression", "BooleanExpression", "CallExpression",
+	"MemberExpression",
 
 	"BooleanLiteral", "NumericLiteral", "StringLiteral",
 	"NoneLiteral", "ObjectLiteral", "ArrayLiteral",
-	"Identifier", "Property",
+	"FunctionLiteral", "IdentifierLiteral", "Property",
 } :: {[NodeKind]: NodeType}
 
 local FromType = {} :: {[NodeType]: NodeKind}
@@ -79,16 +80,15 @@ export type VariableAssignment = {
 } & Statement
 
 export type FunctionDeclaration = {
-	parameters: {Identifier},
+	parameters: {IdentifierLiteral},
 	body: {Statement},
-	name: Identifier?,
+	name: IdentifierLiteral?,
 } & Statement
 
 export type IfStatement = {
 	condition: Expression,
 	alternate: {Statement}?,
 	body: {Statement},
-	name: Identifier,
 } & Statement
 
 --TODO: needs data
@@ -100,13 +100,12 @@ export type WhileStatement = {
 	condition: Expression,
 	alternate: {Statement}?,
 	body: {Statement},
-	name: Identifier,
 } & Statement
 
 export type TryStatement = {
 	alternate: {Statement}?,
 	body: {Statement},
-	symbol: Identifier,
+	symbol: IdentifierLiteral,
 } & Statement
 
 export type ReturnStatement = {
@@ -136,12 +135,12 @@ export type BooleanExpression = {
 } & Expression
 
 export type CallExpression = {
-	arguments: {Identifier},
+	arguments: {IdentifierLiteral},
 	caller: FunctionDeclaration,
 } & Expression
 
 export type MemberExpression = {
-	property: Identifier | Expression,
+	property: IdentifierLiteral | Expression,
 	object: ObjectLiteral,
 	computed: boolean,
 } & Expression
@@ -165,7 +164,15 @@ export type ObjectLiteral = {
 	value: {Property},
 } & Literal
 
-export type Identifier = {
+export type ArrayLiteral = {
+	value: {Statement},
+} & Literal
+
+export type FunctionLiteral = {
+	value: {Statement},
+} & Literal
+
+export type IdentifierLiteral = {
 	value: string,
 } & Literal
 
