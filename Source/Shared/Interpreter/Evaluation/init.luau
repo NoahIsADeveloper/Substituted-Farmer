@@ -27,15 +27,17 @@ function Evaluation.evaluate(node: AST.Statement, environment: Environment.Envir
 	elseif kind == AST.fromType.Identifier then
 		return environment:LookupVariable((node :: AST.Identifier).value)
 
+	-- // Statements
+	elseif kind == AST.fromType.VariableDeclaration then
+		return Statements:VariableDeclaration(node :: AST.VariableDeclaration, environment)
+	elseif kind == AST.fromType.VariableAssignment then
+		return Statements:VariableAssignment(node :: AST.VariableAssignment, environment)
+
 	-- // Expressions
 	elseif kind == AST.fromType.BinaryExpression then
 		return Expressions:BinaryExpression(node :: AST.BinaryExpression, environment)
 	elseif kind == AST.fromType.BooleanExpression then
 		return Expressions:BooleanExpression(node :: AST.BooleanExpression, environment)
-
-	-- // Statements
-	elseif kind == AST.fromType.VariableDeclaration then
-		return Statements:VariableDeclaration(node :: AST.VariableDeclaration, environment)
 
 	-- // Program
 	elseif kind == AST.fromType.Program then
