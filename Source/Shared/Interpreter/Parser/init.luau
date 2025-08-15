@@ -87,9 +87,7 @@ function Parser:ParseStatement(): (AST.Statement)
 		elseif self:after().kind == Token.fromType.CompoundAssign then
 			return Statements:VariableCompoundAssignment(self)
 		end
-	end
-
-	if
+	elseif
 		self:at().kind == Token.fromType.Local or
 		self:at().kind == Token.fromType.Global
 	then
