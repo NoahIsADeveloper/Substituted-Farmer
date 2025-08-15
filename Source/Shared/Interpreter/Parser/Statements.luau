@@ -91,7 +91,37 @@ function Statement:WhileStatement(parser: Parser.Parser): (AST.WhileStatement)
 	} :: any
 end
 
-function Statement:ParseBlock(parser: Parser.Parser) : {AST.Statement}
+function Statement:IfStatement(parser: Parser.Parser): (AST.IfStatement)
+	local start = parser:expect(Token.fromType.If).range[1]
+	parser:expect(Token.fromType.OpenParenthesis)
+	local condition = parser:ParseExpression()
+	parser:expect(Token.fromType.CloseParenthesis)
+	local body = Statement:ParseBlock(parser)
+	local alternate
+	local finish = body[#body].range[2]
+
+	if parser:at().kind == Token.fromType.Else then
+		parser:eat()
+
+		if parser:at().kind == Token.fromType.If then
+			alternate = {Statement:IfStatement(parser)}
+		else
+			alternate = Statement:ParseBlock(parser) :: any
+		end
+
+		finish = alternate[#alternate].range[2]
+	end
+
+	return {
+		kind = AST.fromType.IfStatement,
+		condition = condition,
+		body = body,
+		alternate = alternate,
+		range = {start, finish}
+	} :: any
+end
+
+function Statement:ParseBlock(parser: Parser.Parser): ({AST.Statement})
 	local body: {AST.Statement} = {}
 	parser:expect(Token.fromType.OpenBrace)
 

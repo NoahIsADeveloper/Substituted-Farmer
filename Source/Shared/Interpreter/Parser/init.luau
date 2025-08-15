@@ -91,6 +91,8 @@ function Parser:ParseStatement(fails: boolean?): (AST.Statement)
 		return Statements:VariableDeclaration(self)
 	elseif self:at().kind == Token.fromType.While then
 		return Statements:WhileStatement(self)
+	elseif self:at().kind == Token.fromType.If then
+		return Statements:IfStatement(self)
 	elseif self:at().kind == Token.fromType.Break then
 		return {
 			kind = AST.fromType.BreakStatement,
