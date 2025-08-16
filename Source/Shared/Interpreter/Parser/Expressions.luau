@@ -120,8 +120,26 @@ function Expression:PrimaryExpression(parser: Parser.Parser): (AST.Expression)
 		return {kind = AST.fromType.BooleanLiteral, value = (token.value == "true"), range = parser:eat().range} :: AST.BooleanLiteral
 	elseif token.kind == Token.fromType.None then
 		return {kind = AST.fromType.NoneLiteral, range = parser:eat().range} :: AST.NoneLiteral
+	elseif token.kind == Token.fromType.OpenBracket then
+		local value = {}
+		local start = parser:eat().range[1]
+		local finish = start
+
+		while parser:at().kind ~= Token.fromType.CloseBracket do
+			table.insert(value, parser:ParseExpression())
+
+			if parser:at().kind ~= Token.fromType.CloseBracket then
+				parser:expect(Token.fromType.Comma)
+			else
+				finish = parser:eat().range[2]
+				break
+			end
+		end
+
+		return {kind = AST.fromType.ArrayLiteral, value = value, range = {start, finish}}
 	else
-		error(`Unexpected token found during parsing, {AST.fromKind[token.kind]}`)
+		print(token)
+		error(`Unexpected token found during parsing, {Token.fromKind[token.kind]}`)
 	end
 end
 
