@@ -14,6 +14,7 @@ export type Environment = typeof(setmetatable({} :: {
 	DeclareVariable: (self: Environment, name: string, value: Runtime.Value, constant: boolean) -> (),
 	AssignVariable: (self: Environment, name: string, value: Runtime.Value) -> (),
 	LookupVariable: (self: Environment, name: string) -> (Runtime.Value),
+	DeclareGlobals: (self: Environment) -> (),
 	Resolve: (self: Environment, name: string?) -> (Environment),
 
 	new: (parent: Environment?) -> (Environment),
@@ -52,6 +53,10 @@ function Environment:Resolve(name: string?): (Environment)
 	if name and self.variables[name] then return self end
 	if not self.parent then return self end
 	return self.parent:Resolve(name)
+end
+
+function Environment:DeclareGlobals(): ()
+	--TODO: define globals
 end
 
 function Environment.new(parent: Environment?): (Environment)

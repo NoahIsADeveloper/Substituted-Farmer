@@ -11,7 +11,9 @@ local Module = {}
 
 function Module.interpret(source: string, environment: Environment.Environment?): (Runtime.Value?)
 	if not environment then
-		environment = Environment.new()
+		local scope = Environment.new()
+		scope:DeclareGlobals()
+		environment = scope
 	end
 
 	local tokens, ast, result
