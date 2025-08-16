@@ -1,6 +1,8 @@
 --!strict
 --!optimize 2
 
+local Evaluation
+
 export type ValueKind = number
 export type ValueType =
 	| string
@@ -36,6 +38,10 @@ export type StringValue = {
 
 export type BooleanValue = {
 	value: boolean,
+} & Value
+
+export type ArrayValue = {
+	value: {Value},
 } & Value
 
 local ValueKindsArray = {
@@ -82,6 +88,20 @@ function Module:Boolean(value: boolean): (BooleanValue)
 	return {
 		kind = FromType.BooleanValue,
 		value = value,
+	}
+end
+
+function Module:Array(value: {any}): (ArrayValue)
+	Evaluation = require("../Evaluation") :: any
+	local computedValues = {}
+
+	for _, value in pairs(value) do
+		table.insert(computedValues, Evaluation.evaluate(value))
+	end
+
+	return {
+		kind = FromType.ArrayValue,
+		value = computedValues,
 	}
 end
 
