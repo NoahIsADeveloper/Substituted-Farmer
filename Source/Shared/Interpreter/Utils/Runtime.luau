@@ -44,6 +44,16 @@ export type ArrayValue = {
 	value: {Value},
 } & Value
 
+export type NativeFunctionValue = {
+	value: (...any) -> (...any),
+} & Value
+
+-- export type FunctionValue = {
+-- 	value: {AST.Statement},
+-- 	parameters: {string},
+-- 	environment: Environment.Environment,
+-- } & Value
+
 local ValueKindsArray = {
 	"NoneValue", "NumberValue", "StringValue",
 	"BooleanValue", "ArrayValue", "ObjectValue",

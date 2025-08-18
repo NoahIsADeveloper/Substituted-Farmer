@@ -142,7 +142,13 @@ function Parser.parse(tokens: {Token.Token}): (AST.Program)
 		table.insert(program.body, object:ParseStatement())
 	end
 
-	program.range = {program.body[1].range[1], program.body[#program.body].range[2]}
+	if #program.body == 0 then
+		 -- EoF: {1, source:len()} Range
+		program.range = tokens[#tokens].range
+	else
+		program.range = {program.body[1].range[1], program.body[#program.body].range[2]}
+	end
+
 	return program
 end
 
