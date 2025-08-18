@@ -21,7 +21,7 @@ export type Parser = typeof(setmetatable({} :: {
 	expect: (self: Parser, expects: Token.TokenKind) -> (Token.Token),
 	next: (self: Parser) -> (Token.Token),
 	at: (self: Parser) -> (Token.Token),
-	after: (self: Parser) -> (Token.Token),
+	peer: (self: Parser) -> (Token.Token),
 	eat: (self: Parser) -> (Token.Token),
 
 	new: (tokens: {Token.Token}) -> (Parser),
@@ -70,7 +70,7 @@ function Parser:at(): (Token.Token)
 	return self.tokens[self.index]
 end
 
-function Parser:after(): (Token.Token)
+function Parser:peer(): (Token.Token)
 	local index = self.index
 	index += 1
 	local token = self.tokens[index]
@@ -99,9 +99,9 @@ end
 
 function Parser:ParseStatement(fails: boolean?): (AST.Statement)
 	if self:at().kind == Token.fromType.Identifier then
-		if self:after().kind == Token.fromType.Assign then
+		if self:peer().kind == Token.fromType.Assign then
 			return Statements:VariableAssignment(self)
-		elseif self:after().kind == Token.fromType.CompoundAssign then
+		elseif self:peer().kind == Token.fromType.CompoundAssign then
 			return Statements:VariableCompoundAssignment(self)
 		end
 	elseif self:at().kind == Token.fromType.Local or self:at().kind == Token.fromType.Global then
