@@ -7,6 +7,22 @@ local Parser = require("../Parser")
 
 local Expression = {}
 
+--[[
+
+Order of Prescidence
+
+// Boolean Comparison
+// Numeric Comparision
+// Additive			--TODO: All 3 of the following the same code. please change.
+// Multiplicitive
+// Exponents
+
+// Call
+// Member
+// Primary
+
+]]--
+
 function Expression:BooleanComparisonExpression(parser: Parser.Parser): (AST.Expression)
 	local left = Expression:NumericComparisonExpression(parser)
 
@@ -105,6 +121,22 @@ function Expression:ExponentiationExpression(parser: Parser.Parser): (AST.Expres
 	end
 
 	return left
+end
+
+function Expression:CallExpression(parser: Parser.Parser, caller: AST.Expression): (AST.Expression)
+	local start = parser:at().range[1]
+	local result = {
+		kind = Token.fromType.CallExpression,
+		caller = caller,
+		arguments = parser:ParseArguments(),
+	} :: AST.CallExpression
+
+	if parser:at().kind == Token.fromType.OpenParenthesis then
+		result = Expression:CallExpression(parser, result) :: any
+	end
+
+	result.range = {start, result.arguments[#result.arguments].range[2]}
+	return result
 end
 
 function Expression:PrimaryExpression(parser: Parser.Parser): (AST.Expression)

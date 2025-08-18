@@ -12,9 +12,11 @@ export type Parser = typeof(setmetatable({} :: {
 
 	tokens: {Token.Token},
 	index: number,
+	previous: Token.Token,
 
 	ParseStatement: (self: Parser, fails: boolean?) -> (AST.Statement),
 	ParseExpression: (self: Parser) -> (AST.Statement),
+	ParseArguments: (self: Parser) -> ({AST.Statement}),
 	notEoF: (self: Parser) -> (boolean),
 	expect: (self: Parser, expects: Token.TokenKind) -> (Token.Token),
 	next: (self: Parser) -> (Token.Token),
@@ -36,6 +38,7 @@ local function skip(token: Token.Token): (boolean)
 end
 
 function Parser:next(): (Token.Token)
+	self.previous = self:at()
 	self.index += 1
 	local token = self:at()
 
@@ -80,6 +83,20 @@ function Parser:after(): (Token.Token)
 	return token
 end
 
+function Parser:ParseArguments(): ({AST.Statement})
+	self:expect(Token.fromType.OpenParenthesis)
+
+	local arguments = {}
+
+	if self:at().kind ~= Token.fromType.CloseParenthesis then
+		repeat
+			table.insert(arguments, self:ParseExpression())
+		until self:at().kind ~= Token.fromType.Comma
+	end
+
+	return arguments
+end
+
 function Parser:ParseStatement(fails: boolean?): (AST.Statement)
 	if self:at().kind == Token.fromType.Identifier then
 		if self:after().kind == Token.fromType.Assign then
@@ -117,6 +134,7 @@ function Parser.new(tokens: {Token.Token}): (Parser)
 	local object =  setmetatable({
 		tokens = tokens or {},
 		index = 1,
+		previous = nil,
 	}, Parser) :: any
 
 	if not Statements then

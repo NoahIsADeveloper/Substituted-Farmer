@@ -115,4 +115,11 @@ function Module:Array(value: {any}): (ArrayValue)
 	}
 end
 
+function Module:NativeFunction(value: (...any) -> (...any)): (NativeFunctionValue)
+	return {
+		kind = FromType.NativeFunctionValue,
+		value = value,
+	}
+end
+
 return Module
