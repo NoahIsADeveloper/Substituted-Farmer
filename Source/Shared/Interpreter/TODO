@@ -1,6 +1,7 @@
-Function Declaration
-Function (anonymous)
+Working Function Declaration/Function Expression Eval
 Call Expressions
+Function Declaration name changes (ident -> member expr/ident)
+
 Try Statement
 Objects
 I/O System
