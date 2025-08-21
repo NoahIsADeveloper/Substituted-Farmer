@@ -48,6 +48,10 @@ export type NativeFunctionValue = {
 	value: (...any) -> (...any),
 } & Value
 
+export type FunctionValue = {
+	value: {any}, --TODO: {AST.Statement}
+} & Value
+
 -- export type FunctionValue = {
 -- 	value: {AST.Statement},
 -- 	parameters: {string},

@@ -36,6 +36,8 @@ function Evaluation.evaluate(node: AST.Statement, environment: Environment.Envir
 		return Values:Boolean((node :: AST.BooleanLiteral).value)
 	elseif kind == AST.fromType.ArrayLiteral then
 		return Values:Array((node :: AST.ArrayLiteral).value)
+	-- elseif kind == AST.fromType.FunctionLiteral then
+	-- 	return Values:Function((node :: AST.FunctionLiteral).value, (node :: AST.FunctionLiteral).parameters)
 	elseif kind == AST.fromType.IdentifierLiteral then
 		return environment:LookupVariable((node :: AST.IdentifierLiteral).value)
 
