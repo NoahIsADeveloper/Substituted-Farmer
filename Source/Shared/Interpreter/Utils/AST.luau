@@ -82,7 +82,7 @@ export type VariableAssignment = {
 export type FunctionDeclaration = {
 	parameters: {IdentifierLiteral},
 	body: {Statement},
-	name: IdentifierLiteral?,
+	name: string,
 } & Statement
 
 export type IfStatement = {

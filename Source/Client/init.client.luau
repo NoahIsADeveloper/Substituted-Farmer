@@ -7,7 +7,9 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Interpreter = require(Shared:FindFirstChild("Interpreter")) :: typeof(require("./Shared/Interpreter"))
 
 local Source = [[
-test()
+function test(test, abc, efg) {
+	123
+}
 ]]
 
 Interpreter.interpret(Source)
