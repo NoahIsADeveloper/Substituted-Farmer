@@ -4,7 +4,8 @@ Function Declaration name changes (ident -> member expr/ident)
 
 Try Statement
 Objects
-I/O System
 Library Import
-Returns
+I/O System (prolly comes with librarys)
+Returns (list of exprs or smth)
 For Statement (cancer)
+Debugging
