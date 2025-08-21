@@ -113,11 +113,11 @@ export type ReturnStatement = {
 } & Statement
 
 export type ContinueStatement = {
-
+	kind: NodeKind,
 } & Statement
 
 export type BreakStatement = {
-
+	kind: NodeKind,
 } & Statement
 
 export type Expression = {} & Statement
