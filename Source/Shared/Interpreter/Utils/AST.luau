@@ -179,7 +179,7 @@ export type IdentifierLiteral = {
 
 export type Property = {
 	value: Expression?,
-	key: any,
+	key: any, --TODO: as any?! huh?
 } & Literal
 
 local Module = {
