@@ -11,8 +11,7 @@ function Statement:FunctionDeclaration(parser: Parser.Parser): (AST.FunctionDecl
 	local start = parser:expect(Token.fromType.Function).range[1]
 	local identifier = parser:expect(Token.fromType.Identifier)
 	local parameters = parser:ParseArguments()
-	parser:expect(Token.fromType.CloseParenthesis)
-	local body = Statement:ParseBlock(parser)
+	local body = parser:ParseBlock()
 
 	return {
 		kind = AST.fromType.FunctionDeclaration,
@@ -89,13 +88,13 @@ function Statement:WhileStatement(parser: Parser.Parser): (AST.WhileStatement)
 	parser:expect(Token.fromType.OpenParenthesis)
 	local condition = parser:ParseExpression()
 	parser:expect(Token.fromType.CloseParenthesis)
-	local body = Statement:ParseBlock(parser)
+	local body = parser:ParseBlock()
 	local alternate
 	local finish = body[#body].range[2]
 
 	if parser:at().kind == Token.fromType.Else then
 		parser:eat()
-		alternate = Statement:ParseBlock(parser)
+		alternate = parser:ParseBlock()
 		finish = alternate[#alternate].range[2]
 	end
 
@@ -113,7 +112,7 @@ function Statement:IfStatement(parser: Parser.Parser): (AST.IfStatement)
 	parser:expect(Token.fromType.OpenParenthesis)
 	local condition = parser:ParseExpression()
 	parser:expect(Token.fromType.CloseParenthesis)
-	local body = Statement:ParseBlock(parser)
+	local body = parser:ParseBlock()
 	local alternate
 	local finish = body[#body].range[2]
 
@@ -123,7 +122,7 @@ function Statement:IfStatement(parser: Parser.Parser): (AST.IfStatement)
 		if parser:at().kind == Token.fromType.If then
 			alternate = {Statement:IfStatement(parser)}
 		else
-			alternate = Statement:ParseBlock(parser) :: any
+			alternate = parser:ParseBlock() :: any
 		end
 
 		finish = alternate[#alternate].range[2]
@@ -136,19 +135,6 @@ function Statement:IfStatement(parser: Parser.Parser): (AST.IfStatement)
 		alternate = alternate,
 		range = {start, finish}
 	} :: any
-end
-
-function Statement:ParseBlock(parser: Parser.Parser): ({AST.Statement})
-	local body: {AST.Statement} = {}
-	parser:expect(Token.fromType.OpenBrace)
-
-	while parser:at().kind ~= Token.fromType.CloseBrace do
-		local statement = parser:ParseStatement()
-		table.insert(body, statement)
-	end
-
-	parser:expect(Token.fromType.CloseBrace)
-	return body
 end
 
 return Statement

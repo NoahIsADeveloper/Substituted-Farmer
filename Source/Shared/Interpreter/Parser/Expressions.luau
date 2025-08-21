@@ -169,6 +169,18 @@ function Expression:PrimaryExpression(parser: Parser.Parser): (AST.Expression)
 		end
 
 		return {kind = AST.fromType.ArrayLiteral, value = value, range = {start, finish}}
+	elseif token.kind == Token.fromType.Function then
+		--TODO: might interfear with function definition statement
+		local start = parser:eat().range[1]
+		local parameters = parser:ParseArguments()
+		local body = parser:ParseBlock()
+
+		return {
+			kind = AST.fromType.FunctionLiteral,
+			value = body,
+			parameters = parameters,
+			range = {start, body[#body].range[2]}
+		} :: AST.FunctionLiteral
 	else
 		print(token)
 		error(`Unexpected token found during parsing, {Token.fromKind[token.kind]}`)

@@ -170,6 +170,7 @@ export type ArrayLiteral = {
 
 export type FunctionLiteral = {
 	value: {Statement},
+	parameters: {IdentifierLiteral},
 } & Literal
 
 export type IdentifierLiteral = {
