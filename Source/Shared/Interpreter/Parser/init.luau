@@ -88,10 +88,14 @@ function Parser:ParseArguments(): ({AST.Statement})
 
 	local arguments = {}
 
+	--TODO: fml
 	if self:at().kind ~= Token.fromType.CloseParenthesis then
+		local stopped = false
 		repeat
+			stopped = true
 			table.insert(arguments, self:ParseExpression())
-		until self:at().kind ~= Token.fromType.Comma
+			if self:at().kind == Token.fromType.Comma then stopped = false; self:eat() end
+		until stopped
 	end
 
 	return arguments
@@ -110,6 +114,8 @@ function Parser:ParseStatement(fails: boolean?): (AST.Statement)
 		return Statements:WhileStatement(self)
 	elseif self:at().kind == Token.fromType.If then
 		return Statements:IfStatement(self)
+	elseif self:at().kind == Token.fromType.Function then
+		return Statements:FunctionDeclaration(self)
 	elseif self:at().kind == Token.fromType.Break then
 		return {
 			kind = AST.fromType.BreakStatement,
