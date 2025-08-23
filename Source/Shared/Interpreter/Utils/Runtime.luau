@@ -107,7 +107,7 @@ function Module:Boolean(value: boolean): (BooleanValue)
 end
 
 function Module:Array(value: {any}): (ArrayValue)
-	Evaluation = require("../Evaluation") :: any
+	if not Evaluation then Evaluation = require("../Evaluation") :: any end
 	local computedValues = {}
 
 	for _, value in pairs(value) do
