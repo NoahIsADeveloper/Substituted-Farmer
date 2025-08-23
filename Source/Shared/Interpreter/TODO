@@ -1,3 +1,5 @@
+call expr eval -> func declar eval -> func lit eval -> member expr
+
 Working Function Declaration/Function Expression Eval
 Call Expressions
 Function Declaration name changes (ident -> member expr/ident)
