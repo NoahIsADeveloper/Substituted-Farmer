@@ -50,6 +50,7 @@ export type NativeFunctionValue = {
 
 export type FunctionValue = {
 	value: {any}, --TODO: {AST.Statement}
+	arguments: {string},
 } & Value
 
 -- export type FunctionValue = {
@@ -119,10 +120,20 @@ function Module:Array(value: {any}): (ArrayValue)
 	}
 end
 
+--TODO: better value definition
 function Module:NativeFunction(value: (...any) -> (...any)): (NativeFunctionValue)
 	return {
 		kind = FromType.NativeFunctionValue,
 		value = value,
+	}
+end
+
+--TODO: value: AST.Statement
+function Module:Function(value: any, parameters: {string}): (NativeFunctionValue)
+	return {
+		kind = FromType.FunctionValue,
+		value = value,
+		parameters = parameters,
 	}
 end
 

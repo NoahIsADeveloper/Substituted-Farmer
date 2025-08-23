@@ -10,7 +10,16 @@ local Statement = {}
 function Statement:FunctionDeclaration(parser: Parser.Parser): (AST.FunctionDeclaration)
 	local start = parser:expect(Token.fromType.Function).range[1]
 	local identifier = parser:expect(Token.fromType.Identifier)
-	local parameters = parser:ParseArguments()
+	local parameters = {}
+
+	for _, value in pairs(parser:ParseArguments()) do
+		if value.kind ~= AST.fromType.IdentifierLiteral then
+			error("fail")
+		end
+
+		table.insert(parameters, (value :: AST.IdentifierLiteral).value :: string)
+	end
+
 	local body = parser:ParseBlock()
 
 	return {

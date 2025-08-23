@@ -7,8 +7,9 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Interpreter = require(Shared:FindFirstChild("Interpreter")) :: typeof(require("./Shared/Interpreter"))
 
 local Source = [[
-vex.test.gay.sex
-pay["gorn"]
+local x = function(abc) {
+	efg
+}
 ]]
 
 Interpreter.interpret(Source)

@@ -220,7 +220,16 @@ function Expression:PrimaryExpression(parser: Parser.Parser): (AST.Expression)
 	elseif token.kind == Token.fromType.Function then
 		--TODO: might interfear with function definition statement
 		local start = parser:eat().range[1]
-		local parameters = parser:ParseArguments()
+		local parameters = {}
+
+		for _, value in pairs(parser:ParseArguments()) do
+			if value.kind ~= AST.fromType.IdentifierLiteral then
+				error("fail")
+			end
+
+			table.insert(parameters, (value :: AST.IdentifierLiteral).value :: string)
+		end
+
 		local body = parser:ParseBlock()
 
 		return {

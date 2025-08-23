@@ -80,7 +80,7 @@ export type VariableAssignment = {
 } & Statement
 
 export type FunctionDeclaration = {
-	parameters: {IdentifierLiteral},
+	parameters: {string},
 	body: {Statement},
 	name: string,
 } & Statement
@@ -170,7 +170,7 @@ export type ArrayLiteral = {
 
 export type FunctionLiteral = {
 	value: {Statement},
-	parameters: {IdentifierLiteral},
+	parameters: {string},
 } & Literal
 
 export type IdentifierLiteral = {
