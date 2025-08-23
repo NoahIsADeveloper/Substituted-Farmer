@@ -104,11 +104,11 @@ function Expression:MultiplicitaveExpression(parser: Parser.Parser): (AST.Expres
 end
 
 function Expression:ExponentiationExpression(parser: Parser.Parser): (AST.Expression)
-	local left = Expression:PrimaryExpression(parser)
+	local left = Expression:CallMemberExpression(parser)
 
 	while parser:at().value == "^" do
 		local operator = parser:eat().value
-		local right = Expression:PrimaryExpression(parser)
+		local right = Expression:CallMemberExpression(parser)
 
 		left = {
 			kind = AST.fromType.BinaryExpression,
@@ -121,6 +121,16 @@ function Expression:ExponentiationExpression(parser: Parser.Parser): (AST.Expres
 	end
 
 	return left
+end
+
+function Expression:CallMemberExpression(parser: Parser.Parser): (AST.Expression)
+	local member = Expression:MemberExpression(parser)
+
+	if parser:at().kind == Token.fromType.OpenParenthesis then
+		return Expression:CallExpression(parser, member)
+	end
+
+	return member
 end
 
 function Expression:CallExpression(parser: Parser.Parser, caller: AST.Expression): (AST.Expression)
@@ -137,6 +147,44 @@ function Expression:CallExpression(parser: Parser.Parser, caller: AST.Expression
 
 	result.range = {start, result.arguments[#result.arguments].range[2]}
 	return result
+end
+
+function Expression:MemberExpression(parser: Parser.Parser): (AST.Expression)
+	local start = parser:at().range[1]
+	local object = Expression:PrimaryExpression(parser)
+	local finish
+
+	while parser:at().kind == Token.fromType.Period or parser:at().kind == Token.fromType.OpenBracket do
+		local operator = parser:eat()
+		local property: AST.Expression, computed: boolean
+
+		if operator.kind == Token.fromType.Period then
+			computed = false
+			property = Expression:PrimaryExpression(parser)
+			finish = property.range[2]
+
+			if property.kind ~= AST.fromType.IdentifierLiteral then
+				--TODO: error
+				error(`hey! that's not right!`)
+			end
+		else
+			computed = true
+			property = parser:ParseExpression()
+			finish = parser:expect(Token.fromType.CloseBracket).range[2]
+		end
+
+		object = {
+			kind = AST.fromType.MemberExpression,
+
+			object = object,
+			property = property,
+			computed = computed,
+
+			range = {start, finish}
+		} :: AST.MemberExpression
+	end
+
+	return object
 end
 
 function Expression:PrimaryExpression(parser: Parser.Parser): (AST.Expression)
