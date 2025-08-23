@@ -1,4 +1,4 @@
-call expr eval -> func declar eval -> func lit eval -> member expr
+call expr eval -> func declar eval -> member expr eval
 
 Working Function Declaration/Function Expression Eval
 Call Expressions
