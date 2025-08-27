@@ -54,9 +54,14 @@ export type FunctionValue = {
 } & Value
 
 local ValueKindsArray = {
-	"NoneValue", "NumberValue", "StringValue",
-	"BooleanValue", "ArrayValue", "ObjectValue",
-	"NativeFunctionValue", "FunctionValue",
+	"NoneValue",
+	"NumberValue",
+	"StringValue",
+	"BooleanValue",
+	"ArrayValue",
+	"ObjectValue",
+	"NativeFunctionValue",
+	"FunctionValue",
 } :: {[ValueKind]: ValueType}
 
 local FromType = {} :: {[ValueType]: ValueKind}

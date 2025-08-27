@@ -37,17 +37,33 @@ export type NodeType =
 	| "Property"
 
 local NodeKindsArray = {
-	"Program", "VariableDeclaration", "VariableAssignment",
-	"FunctionDeclaration", "IfStatement", "ForStatement",
-	"WhileStatement", "TryStatement", "ReturnStatement",
-	"ContinueStatement", "BreakStatement", "ImportStatement",
+	"Program",
+	"VariableDeclaration",
+	"VariableAssignment",
+	"FunctionDeclaration",
+	"IfStatement",
+	"ForStatement",
+	"WhileStatement",
+	"TryStatement",
+	"ReturnStatement",
+	"ContinueStatement",
+	"BreakStatement",
+	"ImportStatement",
 
-	"BinaryExpression", "BooleanExpression", "CallExpression",
+	"BinaryExpression",
+	"BooleanExpression",
+	"CallExpression",
 	"MemberExpression",
 
-	"BooleanLiteral", "NumericLiteral", "StringLiteral",
-	"NoneLiteral", "ObjectLiteral", "ArrayLiteral",
-	"FunctionLiteral", "IdentifierLiteral", "Property",
+	"BooleanLiteral",
+	"NumericLiteral",
+	"StringLiteral",
+	"NoneLiteral",
+	"ObjectLiteral",
+	"ArrayLiteral",
+	"FunctionLiteral",
+	"IdentifierLiteral",
+	"Property",
 } :: {[NodeKind]: NodeType}
 
 local FromType = {} :: {[NodeType]: NodeKind}
