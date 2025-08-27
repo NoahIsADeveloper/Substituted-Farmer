@@ -230,13 +230,13 @@ function Expression:PrimaryExpression(parser: Parser.Parser): (AST.Expression)
 			table.insert(parameters, (value :: AST.IdentifierLiteral).value :: string)
 		end
 
-		local body = parser:ParseBlock()
+		local body, finish = parser:ParseBlock()
 
 		return {
 			kind = AST.fromType.FunctionLiteral,
 			value = body,
 			parameters = parameters,
-			range = {start, body[#body].range[2]}
+			range = {start, finish}
 		} :: AST.FunctionLiteral
 	else
 		print(token)

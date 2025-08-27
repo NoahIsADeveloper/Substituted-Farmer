@@ -53,7 +53,7 @@ function Statement:FunctionDeclaration(parser: Parser.Parser): (AST.FunctionDecl
 		table.insert(parameters, (value :: AST.IdentifierLiteral).value :: string)
 	end
 
-	local body = parser:ParseBlock()
+	local body, finish = parser:ParseBlock()
 
 	return {
 		kind = AST.fromType.FunctionDeclaration,
@@ -62,7 +62,7 @@ function Statement:FunctionDeclaration(parser: Parser.Parser): (AST.FunctionDecl
 		body = body,
 		global = global,
 
-		range = {start, body[#body].range[2]}
+		range = {start, finish}
 	} :: AST.FunctionDeclaration
 end
 
@@ -131,14 +131,12 @@ function Statement:WhileStatement(parser: Parser.Parser): (AST.WhileStatement)
 	parser:expect(Token.fromType.OpenParenthesis)
 	local condition = parser:ParseExpression()
 	parser:expect(Token.fromType.CloseParenthesis)
-	local body = parser:ParseBlock()
+	local body, finish = parser:ParseBlock()
 	local alternate
-	local finish = body[#body].range[2]
 
 	if parser:at().kind == Token.fromType.Else then
 		parser:eat()
-		alternate = parser:ParseBlock()
-		finish = alternate[#alternate].range[2]
+		alternate, finish = parser:ParseBlock()
 	end
 
 	return {
@@ -163,12 +161,12 @@ function Statement:IfStatement(parser: Parser.Parser): (AST.IfStatement)
 		parser:eat()
 
 		if parser:at().kind == Token.fromType.If then
-			alternate = {Statement:IfStatement(parser)}
+			local statement = Statement:IfStatement(parser)
+			alternate = {statement}
+			finish = statement.range[2]
 		else
-			alternate = parser:ParseBlock() :: any
+			alternate, finish = (parser :: any):ParseBlock()
 		end
-
-		finish = alternate[#alternate].range[2]
 	end
 
 	return {
