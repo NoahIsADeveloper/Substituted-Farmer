@@ -17,7 +17,7 @@ function Expression:BinaryExpression(node: AST.BinaryExpression, environment: En
 	local operator = node.operator
 	local call = Operators[operator]
 
-	--TODO: better error message
+	--TODO: better error messages
 	if not call then Debug:Error(node, `error 1`) end
 	if left.kind ~= right.kind then Debug:Error(node, `error 2`) end
 
