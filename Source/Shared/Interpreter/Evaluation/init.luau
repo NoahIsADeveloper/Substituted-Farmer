@@ -7,7 +7,9 @@ local Statements
 local Environment = require("./Environment")
 
 local AST = require("./Utils/AST")
+local Debug = require("./Utils/Debug")
 local Values = require("./Utils/Runtime")
+
 
 local Evaluation = {}
 
@@ -65,8 +67,8 @@ function Evaluation.evaluate(node: AST.Statement, environment: Environment.Envir
 
 	-- // Fail
 	else
-		print(node, AST.fromKind[node.kind])
-		error(`Fail: ({node.range[1]}->{node.range[2]})`)
+		Debug:Error(node, `Evaluation for '{AST.fromKind[node.kind]}' has not been setup yet.`)
+		return Values:None()
 	end
 end
 

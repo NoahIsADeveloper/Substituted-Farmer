@@ -5,6 +5,7 @@ local Environment = require("../Environment")
 local AST = require("../Utils/AST")
 local Values = require("../Utils/Runtime")
 local Operators = require("../Utils/Operations")
+local Debug = require("../Utils/Debug")
 
 local Evaluation = require("../Evaluation")
 
@@ -16,8 +17,9 @@ function Expression:BinaryExpression(node: AST.BinaryExpression, environment: En
 	local operator = node.operator
 	local call = Operators[operator]
 
-	assert(call, `error msg`)
-	assert(left.kind == right.kind, `error msg 2`)
+	--TODO: better error message
+	if not call then Debug:Error(node, `error 1`) end
+	if left.kind ~= right.kind then Debug:Error(node, `error 2`) end
 
 	if left.kind == Values.fromType.NumberValue then
 		local result = call(left.value, right.value)
@@ -35,8 +37,8 @@ function Expression:BinaryExpression(node: AST.BinaryExpression, environment: En
 		end
 	end
 
-	--TODO: better error message
-	error("nuh uh")
+	Debug:Error(node, `Cannot compute '{AST.fromKind[node.left.kind]} {node.operator} {AST.fromKind[node.right.kind]}'`)
+	return Values:None()
 end
 
 function Expression:MemberExpression(node: AST.MemberExpression, environment: Environment.Environment, member: AST.MemberExpression?): (Values.Value)
@@ -55,8 +57,8 @@ function Expression:BooleanExpression(node: AST.BooleanExpression, environment: 
 		return left.value or right.value
 	end
 
-	--TODO: better error message
-	error("wuh uh")
+	Debug:Error(node, `Boolean operator "{node.operator}" is invalid `)
+	return Values:None()
 end
 
 function Expression:CallExpression(node: AST.CallExpression, environment: Environment.Environment): (Values.Value)
@@ -74,8 +76,8 @@ function Expression:CallExpression(node: AST.CallExpression, environment: Enviro
 	elseif caller.kind == Values.fromType.NativeFunctionValue then
 		return (caller :: Values.NativeFunctionValue).value(scope)
 	else
-		--TODO: better error message
-		error(`bad`)
+		Debug:Error(node, `Cannot call {AST.fromKind[caller.kind]} value`)
+		return Values:None()
 	end
 end
 
