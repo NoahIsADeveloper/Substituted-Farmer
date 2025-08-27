@@ -39,6 +39,11 @@ function Expression:BinaryExpression(node: AST.BinaryExpression, environment: En
 	error("nuh uh")
 end
 
+function Expression:MemberExpression(node: AST.MemberExpression, environment: Environment.Environment, member: AST.MemberExpression?): (Values.Value)
+	--TODO: better error message
+	error(`dsakl`)
+end
+
 function Expression:BooleanExpression(node: AST.BooleanExpression, environment: Environment.Environment): (Values.Value)
 	local left = Evaluation.evaluate(node.left, environment) :: Values.Value
 	local right = Evaluation.evaluate(node.right, environment) :: Values.Value
