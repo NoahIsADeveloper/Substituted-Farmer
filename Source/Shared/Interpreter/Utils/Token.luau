@@ -139,7 +139,7 @@ local FromKeyword = {
 	["null"] = FromType.None,
 } :: {[string]: TokenKind}
 
-local Module = {
+local Token = {
 	new = function(kind: TokenKind, raw: string?, value: string?, start: number, finish: number): (Token)
 		return {
 			kind = kind,
@@ -154,4 +154,4 @@ local Module = {
 	fromKind = FromKind,
 }
 
-return Module
+return Token

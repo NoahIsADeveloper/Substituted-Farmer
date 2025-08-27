@@ -183,9 +183,9 @@ export type Property = {
 	key: any, --TODO: as any?! huh?
 } & Literal
 
-local Module = {
+local AST = {
 	fromType = FromType,
 	fromKind = FromKind,
 }
 
-return Module
+return AST

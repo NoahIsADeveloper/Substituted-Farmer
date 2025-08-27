@@ -1,10 +1,13 @@
+--!strict
+--!optimize 2
+
 local AST = require("./AST")
 
-local Module = {}
+local Debug = {}
 
-function Module:Error(node: AST.Statement, errorMessage: string)
+function Debug:Error(node: AST.Statement, errorMessage: string)
 	local message = `{errorMessage}\nBetween ({node.range[1]}-{node.range[2]})`
 	error(message)
 end
 
-return Module
+return Debug

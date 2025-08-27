@@ -53,12 +53,6 @@ export type FunctionValue = {
 	arguments: {string},
 } & Value
 
--- export type FunctionValue = {
--- 	value: {AST.Statement},
--- 	parameters: {string},
--- 	environment: Environment.Environment,
--- } & Value
-
 local ValueKindsArray = {
 	"NoneValue", "NumberValue", "StringValue",
 	"BooleanValue", "ArrayValue", "ObjectValue",
@@ -73,40 +67,40 @@ for index: ValueKind, value: any in pairs(ValueKindsArray) do
 	FromKind[index] = value
 end
 
-local Module = {
+local Runtime = {
 	fromType = FromType,
 	fromKind = FromKind,
 }
 
-function Module:None(): (NoneValue)
+function Runtime:None(): (NoneValue)
 	return {
 		kind = FromType.NoneValue,
 		value = nil,
 	}
 end
 
-function Module:Number(value: number): (NumberValue)
+function Runtime:Number(value: number): (NumberValue)
 	return {
 		kind = FromType.NumberValue,
 		value = value,
 	}
 end
 
-function Module:String(value: string): (StringValue)
+function Runtime:String(value: string): (StringValue)
 	return {
 		kind = FromType.StringValue,
 		value = value,
 	}
 end
 
-function Module:Boolean(value: boolean): (BooleanValue)
+function Runtime:Boolean(value: boolean): (BooleanValue)
 	return {
 		kind = FromType.BooleanValue,
 		value = value,
 	}
 end
 
-function Module:Array(value: {any}): (ArrayValue)
+function Runtime:Array(value: {any}): (ArrayValue)
 	if not Evaluation then Evaluation = require("../Evaluation") :: any end
 	local computedValues = {}
 
@@ -121,7 +115,7 @@ function Module:Array(value: {any}): (ArrayValue)
 end
 
 --TODO: better value definition
-function Module:NativeFunction(value: (...any) -> (...any)): (NativeFunctionValue)
+function Runtime:NativeFunction(value: (...any) -> (...any)): (NativeFunctionValue)
 	return {
 		kind = FromType.NativeFunctionValue,
 		value = value,
@@ -129,7 +123,7 @@ function Module:NativeFunction(value: (...any) -> (...any)): (NativeFunctionValu
 end
 
 --TODO: value: AST.Statement
-function Module:Function(value: any, parameters: {string}): (NativeFunctionValue)
+function Runtime:Function(value: any, parameters: {string}): (NativeFunctionValue)
 	return {
 		kind = FromType.FunctionValue,
 		value = value,
@@ -137,4 +131,4 @@ function Module:Function(value: any, parameters: {string}): (NativeFunctionValue
 	}
 end
 
-return Module
+return Runtime

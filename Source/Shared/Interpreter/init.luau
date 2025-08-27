@@ -7,9 +7,9 @@ local Lexer = require("@self/Lexer")
 
 local Runtime = require("@self/Utils/Runtime")
 
-local Module = {}
+local Interpreter = {}
 
-function Module.interpret(source: string, environment: Environment.Environment?): (Runtime.Value?)
+function Interpreter.interpret(source: string, environment: Environment.Environment?): (Runtime.Value?)
 	if not environment then
 		local scope = Environment.new()
 		scope:DeclareGlobals()
@@ -34,4 +34,4 @@ function Module.interpret(source: string, environment: Environment.Environment?)
 	return result
 end
 
-return Module
+return Interpreter
