@@ -36,7 +36,6 @@ function Expression:BinaryExpression(node: AST.BinaryExpression, environment: En
 	end
 
 	--TODO: better error message
-	print(left.kind, right.kind, AST.fromKind[left.kind], AST.fromKind[right.kind])
 	error("nuh uh")
 end
 
@@ -51,7 +50,28 @@ function Expression:BooleanExpression(node: AST.BooleanExpression, environment: 
 		return left.value or right.value
 	end
 
+	--TODO: better error message
 	error("wuh uh")
+end
+
+function Expression:CallExpression(node: AST.CallExpression, environment: Environment.Environment): (Values.Value)
+	local caller = Evaluation.evaluate(node.caller, environment)
+
+	local scope = environment:new()
+	local arguments = {}
+
+	for _, argument in pairs(node.arguments) do
+		table.insert(arguments, Evaluation.evaluate(argument, environment))
+	end
+
+	if caller.kind == Values.fromType.FunctionValue then
+		return Evaluation.evaluateBody((caller :: Values.FunctionValue).value, scope)
+	elseif caller.kind == Values.fromType.NativeFunctionValue then
+		return (caller :: Values.NativeFunctionValue).value(scope)
+	else
+		--TODO: better error message
+		error(`bad`)
+	end
 end
 
 return Expression
