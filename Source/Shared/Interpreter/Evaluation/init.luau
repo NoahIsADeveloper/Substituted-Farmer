@@ -52,6 +52,8 @@ function Evaluation.evaluate(node: AST.Statement, environment: Environment.Envir
 		return Statements:WhileStatement(node :: AST.WhileStatement, environment)
 	elseif kind == AST.fromType.IfStatement then
 		return Statements:IfStatement(node :: AST.IfStatement, environment)
+	elseif kind == AST.fromType.FunctionDeclaration then
+		return Statements:FunctionDeclaration(node :: AST.FunctionDeclaration, environment)
 
 	-- // Expressions
 	elseif kind == AST.fromType.BinaryExpression then

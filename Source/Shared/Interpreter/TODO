@@ -1,4 +1,3 @@
-test: call expr, func declar
 member expr eval
 
 Working Function Declaration/Function Expression Eval
@@ -14,4 +13,4 @@ Returns (list of exprs or smth)
 For Statement (cancer)
 Debugging
 Classes
-Compile to LuaU
+Compile to Luau

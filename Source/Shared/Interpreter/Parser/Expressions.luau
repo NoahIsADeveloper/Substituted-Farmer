@@ -136,7 +136,7 @@ end
 function Expression:CallExpression(parser: Parser.Parser, caller: AST.Expression): (AST.Expression)
 	local start = parser:at().range[1]
 	local result = {
-		kind = Token.fromType.CallExpression,
+		kind = AST.fromType.CallExpression,
 		caller = caller,
 		arguments = parser:ParseArguments(),
 	} :: AST.CallExpression
@@ -145,7 +145,8 @@ function Expression:CallExpression(parser: Parser.Parser, caller: AST.Expression
 		result = Expression:CallExpression(parser, result) :: any
 	end
 
-	result.range = {start, result.arguments[#result.arguments].range[2]}
+	--TODO: range
+	result.range = {start, -1}
 	return result
 end
 
