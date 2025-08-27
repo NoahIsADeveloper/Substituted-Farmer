@@ -1,7 +1,7 @@
 --!strict
 --!optimize 2
 
-local Environment = require("../Environment")
+local Environment = require("./Environment")
 local AST = require("../Utils/AST")
 local Values = require("../Utils/Runtime")
 local Operators = require("../Utils/Operations")

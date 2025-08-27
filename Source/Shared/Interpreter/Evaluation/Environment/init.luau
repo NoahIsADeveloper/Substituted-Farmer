@@ -1,7 +1,7 @@
 --!strict
 --!optimize 2
 
-local Runtime = require("./Utils/Runtime")
+local Runtime = require("../Utils/Runtime")
 
 local Environment = {} :: Environment
 export type Environment = typeof(setmetatable({} :: {

@@ -4,7 +4,7 @@
 local Expressions
 local Statements
 
-local Environment = require("./Environment")
+local Environment = require("@self/Environment")
 
 local AST = require("./Utils/AST")
 local Debug = require("./Utils/Debug")

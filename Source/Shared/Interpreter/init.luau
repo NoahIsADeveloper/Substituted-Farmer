@@ -1,7 +1,7 @@
 --!strict
 --!optimize 2
-local Environment = require("@self/Environment")
 local Evaluation = require("@self/Evaluation")
+local Environment = require("@self/Evaluation/Environment")
 local Parser = require("@self/Parser")
 local Lexer = require("@self/Lexer")
 
