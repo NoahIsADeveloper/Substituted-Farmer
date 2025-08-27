@@ -8,7 +8,14 @@ local Parser = require("../Parser")
 local Statement = {}
 
 function Statement:FunctionDeclaration(parser: Parser.Parser): (AST.FunctionDeclaration)
-	local start = parser:expect(Token.fromType.Function).range[1]
+	local global = true
+	if parser:at().kind == Token.fromType.Global or parser:at().kind == Token.fromType.Local then
+		global = parser:at().value == Token.fromType.Global
+	end
+
+	local start = parser:eat().range[1]
+	parser:expect(Token.fromType.Function)
+
 	local identifier = parser:expect(Token.fromType.Identifier)
 	local parameters = {}
 
@@ -27,6 +34,7 @@ function Statement:FunctionDeclaration(parser: Parser.Parser): (AST.FunctionDecl
 		parameters = parameters,
 		name = identifier.value,
 		body = body,
+		global = global,
 
 		range = {start, body[#body].range[2]}
 	} :: AST.FunctionDeclaration

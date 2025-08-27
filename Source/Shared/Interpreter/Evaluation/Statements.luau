@@ -23,6 +23,20 @@ function Statement:VariableDeclaration(node: AST.VariableDeclaration, environmen
 	return Values:None()
 end
 
+function Statement:FunctionDeclaration(node: AST.FunctionDeclaration, environment: Environment.Environment): (Values.NoneValue)
+	if node.global then
+		environment = environment:Resolve()
+	end
+
+	environment:DeclareVariable(
+		node.name,
+		Values:Function(node.body, node.parameters),
+		false
+	)
+
+	return Values:None()
+end
+
 function Statement:VariableAssignment(node: AST.VariableAssignment, environment: Environment.Environment): (Values.NoneValue)
 	local identifier = node.identifier
 	local value = Evaluation.evaluate(node.value, environment)

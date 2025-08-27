@@ -83,6 +83,7 @@ export type FunctionDeclaration = {
 	parameters: {string},
 	body: {Statement},
 	name: string,
+	global: boolean,
 } & Statement
 
 export type IfStatement = {

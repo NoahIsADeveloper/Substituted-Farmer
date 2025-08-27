@@ -124,14 +124,15 @@ function Parser:ParseStatement(fails: boolean?): (AST.Statement)
 			return Statements:VariableCompoundAssignment(self)
 		end
 	elseif self:at().kind == Token.fromType.Local or self:at().kind == Token.fromType.Global then
-		return Statements:VariableDeclaration(self)
+		if self:peer().kind == Token.fromType.Function then
+			return Statements:FunctionDeclaration(self)
+		else
+			return Statements:VariableDeclaration(self)
+		end
 	elseif self:at().kind == Token.fromType.While then
 		return Statements:WhileStatement(self)
 	elseif self:at().kind == Token.fromType.If then
 		return Statements:IfStatement(self)
-	elseif self:at().kind == Token.fromType.Function and self:peer().kind == Token.fromType.Identifier then
-		--TODO: might interfear with function expression
-		return Statements:FunctionDeclaration(self)
 	elseif self:at().kind == Token.fromType.Break then
 		return {
 			kind = AST.fromType.BreakStatement,
@@ -142,6 +143,8 @@ function Parser:ParseStatement(fails: boolean?): (AST.Statement)
 			kind = AST.fromType.ContinueStatement,
 			range = self:eat().range,
 		} :: AST.BreakStatement
+	-- elseif self:at().kind == Token.fromType.Function and self:peer().kind == Token.fromType.Identifier then
+	-- 	return Statements:FunctionDeclaration(self)
 	end
 
 	if fails then error(`i love oranges`) end
