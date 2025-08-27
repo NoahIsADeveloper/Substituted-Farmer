@@ -106,7 +106,7 @@ export type WhileStatement = {
 export type TryStatement = {
 	alternate: {Statement}?,
 	body: {Statement},
-	symbol: IdentifierLiteral,
+	symbol: string,
 } & Statement
 
 export type ReturnStatement = {

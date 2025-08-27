@@ -7,6 +7,32 @@ local Parser = require("../Parser")
 
 local Statement = {}
 
+function Statement:TryStatement(parser: Parser.Parser): (AST.TryStatement)
+	local start = parser:expect(Token.fromType.Try).range[1]
+	local body, finish = parser:ParseBlock()
+	local alternate
+	local symbol
+
+	if parser:at().kind == Token.fromType.Else then
+		parser:eat()
+
+		if parser:at().kind == Token.fromType.Identifier then
+			symbol = parser:eat().value
+		end
+
+		alternate, finish = parser:ParseBlock()
+	end
+
+	return {
+		kind = AST.fromType.TryStatement,
+		body = body,
+		alternate = alternate :: any,
+		symbol = symbol,
+
+		range = {start, finish},
+	} :: AST.TryStatement
+end
+
 function Statement:FunctionDeclaration(parser: Parser.Parser): (AST.FunctionDeclaration)
 	local global = true
 	if parser:at().kind == Token.fromType.Global or parser:at().kind == Token.fromType.Local then

@@ -17,7 +17,7 @@ export type Parser = typeof(setmetatable({} :: {
 	ParseStatement: (self: Parser, fails: boolean?) -> (AST.Statement),
 	ParseExpression: (self: Parser) -> (AST.Statement),
 	ParseArguments: (self: Parser) -> ({AST.Statement}),
-	ParseBlock: (self: Parser) -> ({AST.Statement}),
+	ParseBlock: (self: Parser) -> ({AST.Statement}, number),
 	notEoF: (self: Parser) -> (boolean),
 	expect: (self: Parser, expects: Token.TokenKind) -> (Token.Token),
 	next: (self: Parser) -> (Token.Token),
@@ -103,7 +103,7 @@ function Parser:ParseArguments(): ({AST.Statement})
 	return arguments
 end
 
-function Parser:ParseBlock(): ({AST.Statement})
+function Parser:ParseBlock(): ({AST.Statement}, number)
 	local body: {AST.Statement} = {}
 	self:expect(Token.fromType.OpenBrace)
 
@@ -112,8 +112,8 @@ function Parser:ParseBlock(): ({AST.Statement})
 		table.insert(body, statement)
 	end
 
-	self:expect(Token.fromType.CloseBrace)
-	return body
+	local finish = self:expect(Token.fromType.CloseBrace).range[2]
+	return body, finish
 end
 
 function Parser:ParseStatement(fails: boolean?): (AST.Statement)
@@ -143,6 +143,8 @@ function Parser:ParseStatement(fails: boolean?): (AST.Statement)
 			kind = AST.fromType.ContinueStatement,
 			range = self:eat().range,
 		} :: AST.BreakStatement
+	elseif self:at().kind == Token.fromType.Try then
+		Statements:TryStatement(self)
 	-- elseif self:at().kind == Token.fromType.Function and self:peer().kind == Token.fromType.Identifier then
 	-- 	return Statements:FunctionDeclaration(self)
 	end

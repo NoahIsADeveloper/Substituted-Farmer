@@ -3,7 +3,8 @@ member expr eval
 
 Working Function Declaration/Function Expression Eval
 Call Expressions
-Function Declaration name changes (ident -> member expr/ident)
+Function Declaration name changes
+-# (ident -> member expr/ident so local function object.myFunction() {} is valid syntax)
 
 Try Statement
 Objects
