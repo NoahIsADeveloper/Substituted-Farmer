@@ -6,10 +6,6 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Interpreter = require(Shared:FindFirstChild("Interpreter")) :: typeof(require("./Shared/Interpreter"))
 
-local Source = [[
-local x = function(abc) {
-	efg
-}
-]]
+local Source = [[]]
 
 Interpreter.interpret(Source)
