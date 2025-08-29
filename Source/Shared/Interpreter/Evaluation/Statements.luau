@@ -55,6 +55,20 @@ function Statement:IfStatement(node: AST.IfStatement, environment: Environment.E
 	return Values:None()
 end
 
+function Statement:TryStatement(node: AST.TryStatement, environment: Environment.Environment): (Values.Value)
+	local success: boolean, errorMessage: any = pcall(Evaluation.evaluateBody, node.body, environment:new())
+
+	if not success and node.alternate then
+		local scope = environment:new()
+		if node.symbol then
+			scope:DeclareVariable(node.symbol, Values:String(debug.traceback(errorMessage)), true)
+		end
+		Evaluation.evaluateBody(node.alternate, scope)
+	end
+
+	return Values:None()
+end
+
 function Statement:WhileStatement(node: AST.WhileStatement, environment: Environment.Environment): (Values.NoneValue)
 	local running = true
 	while running and Evaluation.evaluate(node.condition, environment).value do

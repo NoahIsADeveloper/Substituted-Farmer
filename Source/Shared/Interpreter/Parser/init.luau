@@ -144,9 +144,7 @@ function Parser:ParseStatement(fails: boolean?): (AST.Statement)
 			range = self:eat().range,
 		} :: AST.BreakStatement
 	elseif self:at().kind == Token.fromType.Try then
-		Statements:TryStatement(self)
-	-- elseif self:at().kind == Token.fromType.Function and self:peer().kind == Token.fromType.Identifier then
-	-- 	return Statements:FunctionDeclaration(self)
+		return Statements:TryStatement(self)
 	end
 
 	if fails then error(`i love oranges`) end

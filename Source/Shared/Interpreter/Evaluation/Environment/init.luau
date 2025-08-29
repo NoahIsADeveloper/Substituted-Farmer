@@ -1,7 +1,8 @@
 --!strict
 --!optimize 2
 
-local Runtime = require("../Utils/Runtime")
+local Values = require("../Utils/Runtime")
+local AST = require("../Utils/AST")
 
 local Environment = {} :: Environment
 export type Environment = typeof(setmetatable({} :: {
@@ -11,9 +12,9 @@ export type Environment = typeof(setmetatable({} :: {
 	variables: {[string]: any},
 	constants: {string},
 
-	DeclareVariable: (self: Environment, name: string, value: Runtime.Value, constant: boolean) -> (),
-	AssignVariable: (self: Environment, name: string, value: Runtime.Value) -> (),
-	LookupVariable: (self: Environment, name: string) -> (Runtime.Value),
+	DeclareVariable: (self: Environment, name: string, value: Values.Value, constant: boolean) -> (),
+	AssignVariable: (self: Environment, name: string, value: Values.Value) -> (),
+	LookupVariable: (self: Environment, name: string) -> (Values.Value),
 	DeclareGlobals: (self: Environment) -> (),
 	Resolve: (self: Environment, name: string?) -> (Environment),
 
@@ -21,7 +22,7 @@ export type Environment = typeof(setmetatable({} :: {
 }, Environment))
 Environment.__index = Environment
 
-function Environment:DeclareVariable(name: string, value: Runtime.Value, immutable: boolean): ()
+function Environment:DeclareVariable(name: string, value: Values.Value, immutable: boolean): ()
 	if not name then error(`Cannot declare variable without a name`) end
 	if self.variables[name] then error(`Cannot declare variable '{name}' as it already exists`) end
 
@@ -29,7 +30,7 @@ function Environment:DeclareVariable(name: string, value: Runtime.Value, immutab
 	if immutable then table.insert(self.constants, name) end
 end
 
-function Environment:AssignVariable(name: string, value: Runtime.Value): ()
+function Environment:AssignVariable(name: string, value: Values.Value): ()
 	local environment = self:Resolve(name)
 
 	--TODO: better error text
@@ -40,13 +41,13 @@ function Environment:AssignVariable(name: string, value: Runtime.Value): ()
 	environment.variables[name] = value
 end
 
-function Environment:LookupVariable(name: string): (Runtime.Value)
+function Environment:LookupVariable(name: string): (Values.Value)
 	local environment = self:Resolve(name)
 
 	--TODO: better error text
 	if not environment then error(`wtaf is ts 🪦`) end
 
-	return environment.variables[name] or Runtime:None()
+	return environment.variables[name] or Values:None()
 end
 
 function Environment:Resolve(name: string?): (Environment)
@@ -56,7 +57,9 @@ function Environment:Resolve(name: string?): (Environment)
 end
 
 function Environment:DeclareGlobals(): ()
-	--TODO: define globals
+	self:DeclareVariable("print", Values:NativeFunction(function(arguments: {AST.Expression}, scope: Environment)
+		print(arguments)
+	end), true)
 end
 
 function Environment.new(parent: Environment?): (Environment)
