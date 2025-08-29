@@ -42,8 +42,21 @@ function Expression:BinaryExpression(node: AST.BinaryExpression, environment: En
 end
 
 function Expression:MemberExpression(node: AST.MemberExpression, environment: Environment.Environment, member: AST.MemberExpression?): (Values.Value)
-	--TODO: better error message
-	error(`dsakl`)
+	--TODO: doo doo dogshit please fixy thank you
+	local object = Evaluation.evaluate(node.object, environment)
+	local property
+
+	if node.computed then
+		property = (node.property :: AST.IdentifierLiteral).value
+	else
+		property = Evaluation.evaluate(node.property, environment).value
+	end
+
+	if object.value[property] then
+		return object.value[property]
+	end
+
+	return Values:None()
 end
 
 function Expression:BooleanExpression(node: AST.BooleanExpression, environment: Environment.Environment): (Values.Value)

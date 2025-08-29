@@ -62,6 +62,8 @@ function Evaluation.evaluate(node: AST.Statement, environment: Environment.Envir
 		return Expressions:BooleanExpression(node :: AST.BooleanExpression, environment)
 	elseif kind == AST.fromType.CallExpression then
 		return Expressions:CallExpression(node :: AST.CallExpression, environment)
+	elseif kind == AST.fromType.MemberExpression then
+		return Expressions:MemberExpression(node :: AST.MemberExpression, environment)
 
 	-- // Program
 	elseif kind == AST.fromType.Program then
