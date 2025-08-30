@@ -2,7 +2,6 @@
 --!optimize 2
 
 local Values = require("../Utils/Runtime")
-local AST = require("../Utils/AST")
 
 local Environment = {} :: Environment
 export type Environment = typeof(setmetatable({} :: {
