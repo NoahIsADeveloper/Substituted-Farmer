@@ -3,7 +3,6 @@
 objects
 
 Working Function Declaration/Function Expression Eval
-Call Expressions
 Function Declaration name changes
 -# (ident -> member expr/ident so local function object.myFunction() {} is valid syntax)
 

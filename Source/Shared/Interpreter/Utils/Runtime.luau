@@ -1,6 +1,8 @@
 --!strict
 --!optimize 2
 
+local AST = require("./AST")
+
 local Evaluation
 
 export type ValueKind = number
@@ -45,11 +47,11 @@ export type ArrayValue = {
 } & Value
 
 export type NativeFunctionValue = {
-	value: (...any) -> (...any),
+	value: (scope: any, arguments: {Value}) -> (...any),
 } & Value
 
 export type FunctionValue = {
-	value: {any}, --TODO: {AST.Statement}
+	value: {AST.Statement},
 	arguments: {string},
 } & Value
 

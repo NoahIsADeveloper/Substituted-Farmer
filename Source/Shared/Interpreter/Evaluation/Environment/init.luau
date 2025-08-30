@@ -57,7 +57,7 @@ function Environment:Resolve(name: string?): (Environment)
 end
 
 function Environment:DeclareGlobals(): ()
-	self:DeclareVariable("print", Values:NativeFunction(function(arguments: {AST.Expression}, scope: Environment)
+	self:DeclareVariable("print", Values:NativeFunction(function(scope: Environment, arguments: {Values.Value})
 		print(arguments)
 	end), true)
 end

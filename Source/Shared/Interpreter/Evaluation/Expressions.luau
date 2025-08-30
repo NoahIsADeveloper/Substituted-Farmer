@@ -87,7 +87,7 @@ function Expression:CallExpression(node: AST.CallExpression, environment: Enviro
 	if caller.kind == Values.fromType.FunctionValue then
 		return Evaluation.evaluateBody((caller :: Values.FunctionValue).value, scope)
 	elseif caller.kind == Values.fromType.NativeFunctionValue then
-		return (caller :: Values.NativeFunctionValue).value(arguments, scope)
+		return (caller :: Values.NativeFunctionValue).value(scope, arguments) or Values:None()
 	else
 		Debug:Error(node, `Cannot call {AST.fromKind[caller.kind]} value`)
 		return Values:None()
