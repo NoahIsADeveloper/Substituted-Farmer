@@ -11,6 +11,10 @@ Library Import
 I/O System (prolly comes with librarys)
 Returns (list of exprs or smth)
 For Statement (cancer)
-Debugging
 Classes
+
+Debugging
+Errors send it back and every one it gets sent back by it adds to the "stack"?
+Fuck if I know how debug shit is meant to work
+
 Compile to Luau
