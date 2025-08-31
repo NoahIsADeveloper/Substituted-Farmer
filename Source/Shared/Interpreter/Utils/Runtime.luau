@@ -111,7 +111,7 @@ function Runtime:Array(value: {any}): (ArrayValue)
 	if not Evaluation then Evaluation = require("../Evaluation") :: any end
 	local computedValues = {}
 
-	for _, value in pairs(value) do
+	for _, value in ipairs(value) do
 		table.insert(computedValues, Evaluation.evaluate(value))
 	end
 
