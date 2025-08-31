@@ -8,7 +8,7 @@ local Interpreter = require(Shared:FindFirstChild("Interpreter")) :: typeof(requ
 
 local Source = [[
 local function test() {
-	print(123)
+	local x = 5 + true
 }
 
 test()

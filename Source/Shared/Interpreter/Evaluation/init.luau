@@ -5,77 +5,132 @@ local Expressions
 local Statements
 
 local Environment = require("@self/Environment")
+local Stack = require("@self/Stack")
 
 local AST = require("./Utils/AST")
-local Debug = require("./Utils/Debug")
 local Values = require("./Utils/Runtime")
 
+local ASTTypes = AST.fromType
 
 local Evaluation = {}
+export type EvaluationData = {
+	environment: Environment.Environment,
+	stack: Stack.Stack,
+}
 
-function Evaluation.evaluateBody(body: {AST.Statement}, environment: Environment.Environment): (Values.Value)
+local Evaluators = {
+	-- // Literals
+	[ASTTypes.NumericLiteral] = function(node: AST.NumericLiteral, data)
+		return Values:Number(node.value)
+	end,
+	[ASTTypes.StringLiteral] = function(node: AST.StringLiteral, data)
+		return Values:String(node.value)
+	end,
+	[ASTTypes.BooleanLiteral] = function(node: AST.BooleanLiteral, data)
+		return Values:Boolean(node.value)
+	end,
+	[ASTTypes.ArrayLiteral] = function(node: AST.ArrayLiteral, data)
+		return Values:Array(node.value)
+	end,
+	[ASTTypes.FunctionLiteral] = function(node: AST.FunctionLiteral, data)
+		return Values:Function(node.value, node.parameters)
+	end,
+	[ASTTypes.IdentifierLiteral] = function(node: AST.IdentifierLiteral, data)
+		return data.environment:LookupVariable(node.value)
+	end,
+
+	-- // Statements
+	[ASTTypes.VariableDeclaration] = function(node: AST.VariableDeclaration, data)
+		return Statements:VariableDeclaration(node, data)
+	end,
+	[ASTTypes.WhileStatement] = function(node: AST.WhileStatement, data)
+		return Statements:WhileStatement(node, data)
+	end,
+	[ASTTypes.VariableAssignment] = function(node: AST.VariableAssignment, data)
+		return Statements:VariableAssignment(node, data)
+	end,
+	[ASTTypes.IfStatement] = function(node: AST.IfStatement, data)
+		return Statements:IfStatement(node, data)
+	end,
+	[ASTTypes.FunctionDeclaration] = function(node: AST.FunctionDeclaration, data)
+		return Statements:FunctionDeclaration(node, data)
+	end,
+	[ASTTypes.TryStatement] = function(node: AST.TryStatement, data)
+		return Statements:TryStatement(node, data)
+	end,
+
+	-- // Expressions
+	[AST.fromType.BinaryExpression] = function(node: AST.BinaryExpression, data)
+		return Expressions:BinaryExpression(node, data)
+	end,
+	[AST.fromType.BooleanExpression] = function(node: AST.BooleanExpression, data)
+		return Expressions:BooleanExpression(node, data)
+	end,
+	[AST.fromType.CallExpression] = function(node: AST.CallExpression, data)
+		return Expressions:CallExpression(node, data)
+	end,
+	[AST.fromType.MemberExpression] = function(node: AST.MemberExpression, data)
+		return Expressions:MemberExpression(node, data)
+	end,
+
+	-- // Program
+	[ASTTypes.Program] = function(node: AST.Program, data)
+		return Evaluation["evaluateBody"](node.body, data)
+	end
+} :: {(node: any, data: EvaluationData) -> (Values.Value)}
+
+function Evaluation.up(data: EvaluationData)
+	local scope = data.environment:new()
+	data.environment = scope
+end
+
+function Evaluation.down(data: EvaluationData)
+	local scope = data.environment.parent :: Environment.Environment
+	data.environment = scope
+end
+
+function Evaluation.evaluateBody(body: {AST.Statement}, data: EvaluationData): (Values.Value)
 	local lastValue = Values:None()
 
 	for _, node: AST.Statement in pairs(body) do
-		lastValue = Evaluation.evaluate(node, environment)
+		lastValue = Evaluation.evaluate(node, data)
 	end
 
 	return lastValue
 end
 
-function Evaluation.evaluate(node: AST.Statement, environment: Environment.Environment): (Values.Value)
+function Evaluation.evaluate(node: AST.Statement, data: EvaluationData): (Values.Value)
 	if not Expressions then Expressions = require("@self/Expressions") :: any end
 	if not Statements then Statements = require("@self/Statements") :: any end
 
 	local kind: AST.NodeKind = node.kind
+	local call = Evaluators[kind]
 
-	-- // Literals
-	if kind == AST.fromType.NumericLiteral then
-		return Values:Number((node :: AST.NumericLiteral).value)
-	elseif kind == AST.fromType.StringLiteral then
-		return Values:String((node :: AST.StringLiteral).value)
-	elseif kind == AST.fromType.BooleanLiteral then
-		return Values:Boolean((node :: AST.BooleanLiteral).value)
-	elseif kind == AST.fromType.ArrayLiteral then
-		return Values:Array((node :: AST.ArrayLiteral).value)
-	elseif kind == AST.fromType.FunctionLiteral then
-		return Values:Function((node :: AST.FunctionLiteral).value, (node :: AST.FunctionLiteral).parameters)
-	elseif kind == AST.fromType.IdentifierLiteral then
-		return environment:LookupVariable((node :: AST.IdentifierLiteral).value)
+	if call then
+		return call(node, data)
+	end
 
-	-- // Statements
-	elseif kind == AST.fromType.VariableDeclaration then
-		return Statements:VariableDeclaration(node :: AST.VariableDeclaration, environment)
-	elseif kind == AST.fromType.VariableAssignment then
-		return Statements:VariableAssignment(node :: AST.VariableAssignment, environment)
-	elseif kind == AST.fromType.WhileStatement then
-		return Statements:WhileStatement(node :: AST.WhileStatement, environment)
-	elseif kind == AST.fromType.IfStatement then
-		return Statements:IfStatement(node :: AST.IfStatement, environment)
-	elseif kind == AST.fromType.FunctionDeclaration then
-		return Statements:FunctionDeclaration(node :: AST.FunctionDeclaration, environment)
-	elseif kind == AST.fromType.TryStatement then
-		return Statements:TryStatement(node :: AST.TryStatement, environment)
+	error("Fail")
+	return Values:None()
+end
 
-	-- // Expressions
-	elseif kind == AST.fromType.BinaryExpression then
-		return Expressions:BinaryExpression(node :: AST.BinaryExpression, environment)
-	elseif kind == AST.fromType.BooleanExpression then
-		return Expressions:BooleanExpression(node :: AST.BooleanExpression, environment)
-	elseif kind == AST.fromType.CallExpression then
-		return Expressions:CallExpression(node :: AST.CallExpression, environment)
-	elseif kind == AST.fromType.MemberExpression then
-		return Expressions:MemberExpression(node :: AST.MemberExpression, environment)
+function Evaluation.run(node: AST.Program, environment: Environment.Environment): (Values.Value)
+	local stack = Stack.new()
+	local evaluationData = {
+		environment = environment,
+		stack = stack,
+	}
 
-	-- // Program
-	elseif kind == AST.fromType.Program then
-		return Evaluation.evaluateBody((node :: AST.Program).body, environment)
+	local success, result = pcall(function()
+		return Evaluation.evaluate(node, evaluationData)
+	end)
 
-	-- // Fail
-	else
-		Debug:Error(node, `Evaluation for '{AST.fromKind[node.kind]}' has not been setup yet.`)
+	if not success then
+		warn(stack:Out(result :: any))
 		return Values:None()
 	end
+
+	return result
 end
 
 return Evaluation

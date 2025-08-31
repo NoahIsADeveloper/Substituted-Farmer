@@ -1,25 +1,23 @@
 --!strict
 --!optimize 2
 
-local Environment = require("./Environment")
 local AST = require("../Utils/AST")
 local Values = require("../Utils/Runtime")
 local Operators = require("../Utils/Operations")
-local Debug = require("../Utils/Debug")
 
 local Evaluation = require("../Evaluation")
 
 local Expression = {}
 
-function Expression:BinaryExpression(node: AST.BinaryExpression, environment: Environment.Environment): (Values.Value)
-	local left = Evaluation.evaluate(node.left, environment) :: Values.Value
-	local right = Evaluation.evaluate(node.right, environment) :: Values.Value
+function Expression:BinaryExpression(node: AST.BinaryExpression, data: Evaluation.EvaluationData): (Values.Value)
+	local left = Evaluation.evaluate(node.left, data) :: Values.Value
+	local right = Evaluation.evaluate(node.right, data) :: Values.Value
 	local operator = node.operator
 	local call = Operators[operator]
 
 	--TODO: better error messages
-	if not call then Debug:Error(node, `error 1`) end
-	if left.kind ~= right.kind then Debug:Error(node, `error 2`) end
+	if not call then error(`Operator {operator} is not a valid operator`) end
+	if left.kind ~= right.kind then error(`Cannot run operation {operator} on a {AST.fromKind[node.left.kind]} value and a {AST.fromKind[node.right.kind]} value`) end
 
 	if left.kind == Values.fromType.NumberValue then
 		local result = call(left.value, right.value)
@@ -37,19 +35,19 @@ function Expression:BinaryExpression(node: AST.BinaryExpression, environment: En
 		end
 	end
 
-	Debug:Error(node, `Cannot compute '{AST.fromKind[node.left.kind]} {node.operator} {AST.fromKind[node.right.kind]}'`)
+	error(`Cannot compute '{AST.fromKind[node.left.kind]} {node.operator} {AST.fromKind[node.right.kind]}'`)
 	return Values:None()
 end
 
-function Expression:MemberExpression(node: AST.MemberExpression, environment: Environment.Environment, member: AST.MemberExpression?): (Values.Value)
+function Expression:MemberExpression(node: AST.MemberExpression, data: Evaluation.EvaluationData, member: AST.MemberExpression?): (Values.Value)
 	--TODO: doo doo dogshit please fixy thank you
-	local object = Evaluation.evaluate(node.object, environment)
+	local object = Evaluation.evaluate(node.object, data)
 	local property
 
 	if node.computed then
 		property = (node.property :: AST.IdentifierLiteral).value
 	else
-		property = Evaluation.evaluate(node.property, environment).value
+		property = Evaluation.evaluate(node.property, data).value
 	end
 
 	if object.value[property] then
@@ -59,9 +57,9 @@ function Expression:MemberExpression(node: AST.MemberExpression, environment: En
 	return Values:None()
 end
 
-function Expression:BooleanExpression(node: AST.BooleanExpression, environment: Environment.Environment): (Values.Value)
-	local left = Evaluation.evaluate(node.left, environment) :: Values.Value
-	local right = Evaluation.evaluate(node.right, environment) :: Values.Value
+function Expression:BooleanExpression(node: AST.BooleanExpression, data: Evaluation.EvaluationData): (Values.Value)
+	local left = Evaluation.evaluate(node.left, data) :: Values.Value
+	local right = Evaluation.evaluate(node.right, data) :: Values.Value
 	local operator = node.operator
 
 	if operator == "and" then
@@ -70,26 +68,28 @@ function Expression:BooleanExpression(node: AST.BooleanExpression, environment: 
 		return left.value or right.value
 	end
 
-	Debug:Error(node, `Boolean operator "{node.operator}" is invalid `)
+	error(`Boolean operator "{node.operator}" is invalid`)
 	return Values:None()
 end
 
-function Expression:CallExpression(node: AST.CallExpression, environment: Environment.Environment): (Values.Value)
-	local caller = Evaluation.evaluate(node.caller, environment)
+function Expression:CallExpression(node: AST.CallExpression, data: Evaluation.EvaluationData): (Values.Value)
+	local caller = Evaluation.evaluate(node.caller, data)
 
-	local scope = environment:new()
+	Evaluation.up(data)
+	data.stack:Push(node)
+
 	local arguments = {}
 
 	for index, argument in pairs(node.arguments) do
-		table.insert(arguments, Evaluation.evaluate(argument, environment))
+		table.insert(arguments, Evaluation.evaluate(argument, data))
 	end
 
 	if caller.kind == Values.fromType.FunctionValue then
-		return Evaluation.evaluateBody((caller :: Values.FunctionValue).value, scope)
+		return Evaluation.evaluateBody((caller :: Values.FunctionValue).value, data)
 	elseif caller.kind == Values.fromType.NativeFunctionValue then
-		return (caller :: Values.NativeFunctionValue).value(scope, arguments) or Values:None()
+		return (caller :: Values.NativeFunctionValue).value(data, arguments) or Values:None()
 	else
-		Debug:Error(node, `Cannot call {AST.fromKind[caller.kind]} value`)
+		error(`Attempted to call a {AST.fromKind[caller.kind]} value`)
 		return Values:None()
 	end
 end

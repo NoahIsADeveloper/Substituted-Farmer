@@ -17,13 +17,13 @@ function Interpreter.interpret(source: string, environment: Environment.Environm
 	end
 
 	local tokens, ast, result
-	local function run()
+	local function execute()
 		tokens = Lexer.tokenize(source)
 		ast = Parser.parse(tokens)
-		result = Evaluation.evaluate(ast, environment :: Environment.Environment)
+		result = Evaluation.run(ast, environment :: Environment.Environment)
 	end
 
-	local success: boolean?, errorMessage: string? = pcall(run)
+	local success: boolean?, errorMessage: string? = pcall(execute)
 
 	if not success then warn(`Failed to execute {source} {debug.traceback(errorMessage, 0)}`) end
 	print("Tokens:", tokens)
