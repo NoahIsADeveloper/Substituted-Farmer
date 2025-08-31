@@ -15,7 +15,6 @@ function Expression:BinaryExpression(node: AST.BinaryExpression, data: Evaluatio
 	local operator = node.operator
 	local call = Operators[operator]
 
-	--TODO: better error messages
 	if not call then error(`Operator {operator} is not a valid operator`) end
 	if left.kind ~= right.kind then error(`Cannot run operation {operator} on a {AST.fromKind[node.left.kind]} value and a {AST.fromKind[node.right.kind]} value`) end
 
