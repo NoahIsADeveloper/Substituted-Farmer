@@ -110,7 +110,7 @@ function Evaluation.evaluate(node: AST.Statement, data: EvaluationData): (Values
 		return call(node, data)
 	end
 
-	error("Fail")
+	error(`Cannot evaluate node '{AST.fromKind[node.kind]}' as it has not been set up yet.`)
 	return Values:None()
 end
 
