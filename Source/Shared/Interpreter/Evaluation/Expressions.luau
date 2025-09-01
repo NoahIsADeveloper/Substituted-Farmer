@@ -74,23 +74,27 @@ end
 function Expression:CallExpression(node: AST.CallExpression, data: Evaluation.EvaluationData): (Values.Value)
 	local caller = Evaluation.evaluate(node.caller, data)
 
-	Evaluation.up(data)
-	data.stack:Push(node)
-
+	local result
 	local arguments = {}
 
 	for index, argument in pairs(node.arguments) do
 		table.insert(arguments, Evaluation.evaluate(argument, data))
 	end
 
+	Evaluation.up(data)
+	data.stack:Push(node)
+
 	if caller.kind == Values.fromType.FunctionValue then
-		return Evaluation.evaluateBody((caller :: Values.FunctionValue).value, data)
+		result = Evaluation.evaluateBody((caller :: Values.FunctionValue).value, data)
 	elseif caller.kind == Values.fromType.NativeFunctionValue then
-		return (caller :: Values.NativeFunctionValue).value(data, arguments) or Values:None()
+		result = (caller :: Values.NativeFunctionValue).value(data, arguments) or Values:None()
 	else
 		error(`Attempted to call a {AST.fromKind[caller.kind]} value`)
 		return Values:None()
 	end
+
+	Evaluation.down(data)
+	return result
 end
 
 return Expression

@@ -8,11 +8,12 @@ local Evaluation = require("../Evaluation")
 local Statement = {}
 
 function Statement:VariableDeclaration(node: AST.VariableDeclaration, data: Evaluation.EvaluationData): (Values.NoneValue)
+	local environment = data.environment
 	if node.global then
-		data.environment = data.environment:Resolve()
+		environment = data.environment:Resolve()
 	end
 
-	data.environment:DeclareVariable(
+	environment:DeclareVariable(
 		node.identifier,
 		if node.value then Evaluation.evaluate(node.value, data) else Values:None(),
 		node.immutable
@@ -22,11 +23,12 @@ function Statement:VariableDeclaration(node: AST.VariableDeclaration, data: Eval
 end
 
 function Statement:FunctionDeclaration(node: AST.FunctionDeclaration, data: Evaluation.EvaluationData): (Values.NoneValue)
+	local environment = data.environment
 	if node.global then
-		data.environment = data.environment:Resolve()
+		environment = data.environment:Resolve()
 	end
 
-	data.environment:DeclareVariable(
+	environment:DeclareVariable(
 		node.name,
 		Values:Function(node.body, node.parameters),
 		false

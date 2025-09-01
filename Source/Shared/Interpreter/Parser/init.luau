@@ -99,7 +99,7 @@ function Parser:ParseArguments(): ({AST.Statement})
 		until stopped
 	end
 
-		self:expect(Token.fromType.CloseParenthesis)
+	self:expect(Token.fromType.CloseParenthesis)
 	return arguments
 end
 

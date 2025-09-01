@@ -135,18 +135,20 @@ end
 
 function Expression:CallExpression(parser: Parser.Parser, caller: AST.Expression): (AST.Expression)
 	local start = parser:at().range[1]
+	local finish
 	local result = {
 		kind = AST.fromType.CallExpression,
 		caller = caller,
 		arguments = parser:ParseArguments(),
 	} :: AST.CallExpression
+	finish = parser.previous.range[2]
 
 	if parser:at().kind == Token.fromType.OpenParenthesis then
 		result = Expression:CallExpression(parser, result) :: any
+		finish = result.range[2]
 	end
 
-	--TODO: range
-	result.range = {start, -1}
+	result.range = {start, finish}
 	return result
 end
 

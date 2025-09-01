@@ -119,7 +119,7 @@ function Statement:VariableCompoundAssignment(parser: Parser.Parser): (AST.Varia
 		identifier = identifier.value,
 		value = {
 			kind = AST.fromType.BinaryExpression,
-			left = {kind = AST.fromType.Identifier, value = identifier.value, range = identifier.range} :: any,
+			left = {kind = AST.fromType.IdentifierLiteral, value = identifier.value, range = identifier.range} :: any,
 			right = value,
 			operator = (assignment.value :: string):sub(1, 1) :: string,
 		} :: AST.BinaryExpression,
