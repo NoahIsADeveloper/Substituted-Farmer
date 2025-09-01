@@ -2,6 +2,8 @@
 
 objects
 Error messages/traceback should end execution without the use of the error function
+Break/Continue statement doesn't work if not in highest scope
+Parser lookup table/functions for parsing literals
 
 Function Declaration name changes
 -# (ident -> member expr/ident so local function object.myFunction() {} is valid syntax)
