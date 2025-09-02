@@ -16,7 +16,7 @@ local Evaluation = {}
 export type EvaluationData = {
 	environment: Environment.Environment,
 	stack: Stack.Stack,
-	failData: {range: {number}, message: string}?,
+	failData: {range: {number}, message: string, name: string}?,
 }
 
 local Evaluators = {
@@ -90,11 +90,13 @@ function Evaluation.down(data: EvaluationData)
 	data.environment = scope
 end
 
-function Evaluation.fail(data: EvaluationData, message: string, range: {number})
+function Evaluation.fail(data: EvaluationData, message: string, node: AST.Statement)
 	data.failData = {
-		range = range,
+		range = node.range,
 		message = message,
+		name = AST.fromKind[node.kind] :: string,
 	}
+	print(data.failData)
 	error(message)
 end
 
@@ -135,7 +137,12 @@ function Evaluation.run(node: AST.Program, environment: Environment.Environment)
 	end)
 
 	if not success then
-		warn(stack:Out(result :: any, if evaluationData.failData then evaluationData.failData.range else nil))
+		--TODO: CANCER
+		local message = if evaluationData.failData then evaluationData.failData.message else result :: any
+		local location = if evaluationData.failData then evaluationData.failData.range else node.range
+		local name = if evaluationData.failData then evaluationData.failData.name else AST.fromKind[node.kind]
+
+		warn(stack:Out(message, location, name))
 		return Values:None()
 	end
 

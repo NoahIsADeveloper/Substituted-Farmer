@@ -15,8 +15,8 @@ function Expression:BinaryExpression(node: AST.BinaryExpression, data: Evaluatio
 	local operator = node.operator
 	local call = Operators[operator]
 
-	if not call then Evaluation.fail(data, `Operator {operator} is not a valid operator`, node.range); return Values:None() end
-	if left.kind ~= right.kind then Evaluation.fail(data, `Cannot run operation {operator} on a {AST.fromKind[node.left.kind]} value and a {AST.fromKind[node.right.kind]} value`, node.range); return Values:None() end
+	if not call then Evaluation.fail(data, `Operator {operator} is not a valid operator`, node); return Values:None() end
+	if left.kind ~= right.kind then Evaluation.fail(data, `Cannot run operation {operator} on a {AST.fromKind[node.left.kind]} value and a {AST.fromKind[node.right.kind]} value`, node); return Values:None() end
 
 	if left.kind == Values.fromType.NumberValue then
 		local result = call(left.value, right.value)
@@ -34,7 +34,7 @@ function Expression:BinaryExpression(node: AST.BinaryExpression, data: Evaluatio
 		end
 	end
 
-	Evaluation.fail(data, `Cannot compute '{AST.fromKind[node.left.kind]} {node.operator} {AST.fromKind[node.right.kind]}'`, node.range)
+	Evaluation.fail(data, `Cannot compute '{AST.fromKind[node.left.kind]} {node.operator} {AST.fromKind[node.right.kind]}'`, node)
 	return Values:None()
 end
 
@@ -67,7 +67,7 @@ function Expression:BooleanExpression(node: AST.BooleanExpression, data: Evaluat
 		return left.value or right.value
 	end
 
-	Evaluation.fail(data, `Boolean operator "{node.operator}" is invalid`, node.range)
+	Evaluation.fail(data, `Boolean operator "{node.operator}" is invalid`, node)
 	return Values:None()
 end
 
@@ -89,7 +89,7 @@ function Expression:CallExpression(node: AST.CallExpression, data: Evaluation.Ev
 	elseif caller.kind == Values.fromType.NativeFunctionValue then
 		result = (caller :: Values.NativeFunctionValue).value(data, arguments) or Values:None()
 	else
-		Evaluation.fail(data, `Attempted to call a {AST.fromKind[caller.kind]} value`, node.range)
+		Evaluation.fail(data, `Attempted to call a {AST.fromKind[caller.kind]} value`, node)
 		return Values:None()
 	end
 
