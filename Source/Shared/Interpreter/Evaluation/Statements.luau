@@ -67,7 +67,10 @@ function Statement:TryStatement(node: AST.TryStatement, data: Evaluation.Evaluat
 		--TODO: node.alternate
 		Evaluation.up(data)
 		if node.symbol then
-			data.environment:DeclareVariable(node.symbol, Values:String(data.stack:Out(errorMessage)), true)
+			local message = if data.failData then data.failData.message else errorMessage
+			local location = if data.failData then data.failData.range else node.range
+
+			data.environment:DeclareVariable(node.symbol, Values:String(data.stack:Out(message, location)), true)
 		end
 		Evaluation.evaluateBody(node.alternate, data)
 		Evaluation.down(data)

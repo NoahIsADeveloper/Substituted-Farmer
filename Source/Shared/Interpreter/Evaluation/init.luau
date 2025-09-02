@@ -16,6 +16,7 @@ local Evaluation = {}
 export type EvaluationData = {
 	environment: Environment.Environment,
 	stack: Stack.Stack,
+	failData: {range: {number}, message: string}?,
 }
 
 local Evaluators = {
@@ -89,6 +90,14 @@ function Evaluation.down(data: EvaluationData)
 	data.environment = scope
 end
 
+function Evaluation.fail(data: EvaluationData, message: string, range: {number})
+	data.failData = {
+		range = range,
+		message = message,
+	}
+	error(message)
+end
+
 function Evaluation.evaluateBody(body: {AST.Statement}, data: EvaluationData): (Values.Value)
 	local lastValue = Values:None()
 
@@ -119,14 +128,14 @@ function Evaluation.run(node: AST.Program, environment: Environment.Environment)
 	local evaluationData = {
 		environment = environment,
 		stack = stack,
-	}
+	} :: EvaluationData
 
 	local success, result = pcall(function()
 		return Evaluation.evaluate(node, evaluationData)
 	end)
 
 	if not success then
-		warn(stack:Out(result :: any))
+		warn(stack:Out(result :: any, if evaluationData.failData then evaluationData.failData.range else nil))
 		return Values:None()
 	end
 

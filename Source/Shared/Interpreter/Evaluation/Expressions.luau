@@ -15,8 +15,8 @@ function Expression:BinaryExpression(node: AST.BinaryExpression, data: Evaluatio
 	local operator = node.operator
 	local call = Operators[operator]
 
-	if not call then error(`Operator {operator} is not a valid operator`) end
-	if left.kind ~= right.kind then error(`Cannot run operation {operator} on a {AST.fromKind[node.left.kind]} value and a {AST.fromKind[node.right.kind]} value`) end
+	if not call then Evaluation.fail(data, `Operator {operator} is not a valid operator`, node.range); return Values:None() end
+	if left.kind ~= right.kind then Evaluation.fail(data, `Cannot run operation {operator} on a {AST.fromKind[node.left.kind]} value and a {AST.fromKind[node.right.kind]} value`, node.range); return Values:None() end
 
 	if left.kind == Values.fromType.NumberValue then
 		local result = call(left.value, right.value)
@@ -34,7 +34,7 @@ function Expression:BinaryExpression(node: AST.BinaryExpression, data: Evaluatio
 		end
 	end
 
-	error(`Cannot compute '{AST.fromKind[node.left.kind]} {node.operator} {AST.fromKind[node.right.kind]}'`)
+	Evaluation.fail(data, `Cannot compute '{AST.fromKind[node.left.kind]} {node.operator} {AST.fromKind[node.right.kind]}'`, node.range)
 	return Values:None()
 end
 
@@ -67,7 +67,7 @@ function Expression:BooleanExpression(node: AST.BooleanExpression, data: Evaluat
 		return left.value or right.value
 	end
 
-	error(`Boolean operator "{node.operator}" is invalid`)
+	Evaluation.fail(data, `Boolean operator "{node.operator}" is invalid`, node.range)
 	return Values:None()
 end
 
@@ -89,7 +89,7 @@ function Expression:CallExpression(node: AST.CallExpression, data: Evaluation.Ev
 	elseif caller.kind == Values.fromType.NativeFunctionValue then
 		result = (caller :: Values.NativeFunctionValue).value(data, arguments) or Values:None()
 	else
-		error(`Attempted to call a {AST.fromKind[caller.kind]} value`)
+		Evaluation.fail(data, `Attempted to call a {AST.fromKind[caller.kind]} value`, node.range)
 		return Values:None()
 	end
 
