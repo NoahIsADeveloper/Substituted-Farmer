@@ -1,3 +1,6 @@
+--!strict
+--!optimize 2
+
 return {
 	["name"] = "English",
 	["code"] = "en",
@@ -50,6 +53,6 @@ return {
 	["error.evaluation.binaryexprinvalidoperator"] = "Operator '%s' is not a valid operator",									-- Raw operator
 	["error.evaluation.binaryexprinvalidoperation"] = "Cannot compute %s expression on %s and %s",								-- Operator, Left, Right
 	["error.evaluation.boolexprinvalidoperator"] = "Boolean operator '%s' is not a valid operator",								-- Raw operator
-	["error.evaluation.invalidcall"] = "Attempted to call a(n) '%s'",															-- Value Type
+	["error.evaluation.invalidcall"] = "Value '%s' is not callable",															-- Value Type
 
 }
