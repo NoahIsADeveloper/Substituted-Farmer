@@ -16,22 +16,25 @@ function Expression:BinaryExpression(node: AST.BinaryExpression, data: Evaluatio
 	local call = Operators[operator]
 
 	if not call then Evaluation.fail(data, `Operator {operator} is not a valid operator`, node); return Values:None() end
-	if left.kind ~= right.kind then Evaluation.fail(data, `Cannot run operation {operator} on a {AST.fromKind[node.left.kind]} value and a {AST.fromKind[node.right.kind]} value`, node); return Values:None() end
+	if left.kind == right.kind then
+		if left.kind == Values.fromType.NumberValue then
+			local result = call(left.value, right.value)
 
-	if left.kind == Values.fromType.NumberValue then
-		local result = call(left.value, right.value)
-
-		if type(result) == "number" then
-			return Values:Number(result)
-		elseif type(result) == "boolean" then
-			return Values:Boolean(result)
+			if type(result) == "number" then
+				return Values:Number(result)
+			elseif type(result) == "boolean" then
+				return Values:Boolean(result)
+			end
+		elseif left.kind == Values.fromType.StringValue then
+			if operator == "+" then
+				return Values:String(left.value .. right.value)
+			elseif operator:sub(1, 1) == ">" or operator:sub(1, 1) == "<" then
+				return Values:Boolean(call(left.value, right.value))
+			end
 		end
-	elseif left.kind == Values.fromType.StringValue then
-		if operator == "+" then
-			return Values:String(left.value .. right.value)
-		elseif operator:sub(1, 1) == ">" or operator:sub(1, 1) == "<" then
-			return Values:Boolean(call(left.value, right.value))
-		end
+	else
+		Evaluation.fail(data, `Cannot run operation {operator} on a {AST.fromKind[node.left.kind]} value and a {AST.fromKind[node.right.kind]} value`, node)
+		return Values:None()
 	end
 
 	Evaluation.fail(data, `Cannot compute '{AST.fromKind[node.left.kind]} {node.operator} {AST.fromKind[node.right.kind]}'`, node)
