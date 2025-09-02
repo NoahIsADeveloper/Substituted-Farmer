@@ -2,6 +2,7 @@
 
 objects
 Break/Continue statement doesn't work if not in highest scope
+Language/translations for error messages
 Parser lookup table/functions for parsing primary statements
 Evaluation data should be an object
 
