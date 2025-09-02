@@ -7,7 +7,15 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Interpreter = require(Shared:FindFirstChild("Interpreter")) :: typeof(require("./Shared/Interpreter"))
 
 local Source = [[
+local function test() {
+	global x = false + true
+}
 
+local function run() {
+	test()
+}
+
+run()
 ]]
 
 Interpreter.interpret(Source)
