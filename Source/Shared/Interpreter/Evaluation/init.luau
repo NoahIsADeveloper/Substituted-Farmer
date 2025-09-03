@@ -96,7 +96,6 @@ function Evaluation.fail(data: EvaluationData, message: string, node: AST.Statem
 		message = message,
 		name = AST.fromKind[node.kind] :: string,
 	}
-	print(data.failData)
 	error(message)
 end
 
