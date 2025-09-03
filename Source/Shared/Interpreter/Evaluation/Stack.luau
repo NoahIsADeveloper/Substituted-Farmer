@@ -7,6 +7,7 @@ export type Frame = {
 	kind: AST.NodeKind,
 	node: AST.Statement,
 	range: {number}?,
+	name: string?,
 }
 
 local Stack = {} :: Stack
@@ -26,11 +27,12 @@ export type Stack = typeof(setmetatable({} :: {
 	new: () -> (Stack)
 }, Stack))
 
-function Stack:Push(node: AST.Statement): ()
+function Stack:Push(node: AST.Statement, name: string?): ()
 	table.insert(self.stack, {
 		kind = node.kind,
 		node = node,
 		range = node.range,
+		name = name,
 	} :: Frame)
 end
 
@@ -64,7 +66,12 @@ function Stack:Out(message: any, location: {number}, name: string): (string)
 	for index = 1, #self.stack do
 		local frame = self.stack[index]
 		local range = if frame.range then string.format("[%d, %d]", frame.range[1], frame.range[2]) else "[unknown]"
-		table.insert(lines, ("\t%s %s"):format(`{AST.fromKind[frame.kind]}`, range))
+
+		table.insert(lines, ("\t%s%s %s"):format(
+			`{AST.fromKind[frame.kind]}`,
+			if frame.name then` {frame.name}` else "",
+			range
+		))
 	end
 
 	return table.concat(lines, "\n")
