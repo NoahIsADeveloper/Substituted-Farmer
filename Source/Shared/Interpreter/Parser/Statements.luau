@@ -113,6 +113,7 @@ function Statement:VariableCompoundAssignment(parser: Parser.Parser): (AST.Varia
 	local assignment = parser:expect(Token.fromType.CompoundAssign)
 	local value = parser:ParseExpression()
 
+	--TODO: better ident get
 	return {
 		kind = AST.fromType.VariableAssignment,
 		range = {identifier.range[1], value.range[2]},
