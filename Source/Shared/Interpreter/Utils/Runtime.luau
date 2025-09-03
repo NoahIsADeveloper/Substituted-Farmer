@@ -125,19 +125,17 @@ function Runtime:Array(value: {any}): (ArrayValue)
 	}
 end
 
---TODO: better value definition
-function Runtime:NativeFunction(value: (...any) -> (...any)): (NativeFunctionValue)
+function Runtime:NativeFunction(value: (scope: any, arguments: {Value}) -> (...any)): (NativeFunctionValue)
 	return {
 		kind = FromType.NativeFunctionValue,
 		value = value,
 	}
 end
 
---TODO: value: AST.Statement
-function Runtime:Function(value: any, parameters: {string}): (NativeFunctionValue)
+function Runtime:Function(value: {AST.Statement}, parameters: {string}): (NativeFunctionValue)
 	return {
 		kind = FromType.FunctionValue,
-		value = value,
+		value = value :: any,
 		parameters = parameters,
 	}
 end

@@ -95,7 +95,6 @@ function Statement:WhileStatement(node: AST.WhileStatement, data: Evaluation.Eva
 	end
 
 	if node.alternate then
-		--TODO: node.alternate
 		Evaluation.up(data)
 		Evaluation.evaluateBody(node.alternate, data)
 		Evaluation.down(data)

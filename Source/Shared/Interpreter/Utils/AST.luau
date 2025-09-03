@@ -153,7 +153,7 @@ export type BooleanExpression = {
 
 export type CallExpression = {
 	arguments: {IdentifierLiteral},
-	caller: Expression, --TODO: is this accurate?
+	caller: Expression,
 } & Expression
 
 export type MemberExpression = {
