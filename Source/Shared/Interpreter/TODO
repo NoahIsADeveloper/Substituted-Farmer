@@ -1,7 +1,10 @@
 # TODO
 
-objects
+Test Objects Parser
+
 Break/Continue statement doesn't work if not in highest scope
+Return statement would also have the above issue
+
 Language/translations for error messages
 Parser lookup table/functions for parsing primary statements
 Evaluation data should be an object
@@ -9,7 +12,6 @@ Evaluation data should be an object
 Function Declaration name changes
 -# (ident -> member expr/ident so local function object.myFunction() {} is valid syntax)
 
-Objects
 Library Import
 I/O System (prolly comes with librarys)
 Returns (list of exprs or smth)

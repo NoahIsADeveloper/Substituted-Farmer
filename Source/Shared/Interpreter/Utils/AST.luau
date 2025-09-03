@@ -195,8 +195,8 @@ export type IdentifierLiteral = {
 } & Literal
 
 export type Property = {
-	value: Expression?,
-	key: any, --TODO: as any?! huh?
+	value: Expression,
+	key: Expression, --TODO: as any?! huh?
 } & Literal
 
 local AST = {

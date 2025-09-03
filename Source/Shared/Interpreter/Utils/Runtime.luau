@@ -46,6 +46,10 @@ export type ArrayValue = {
 	value: {Value},
 } & Value
 
+export type ObjectValue = {
+	value: {[Value]: Value},
+} & Value
+
 export type NativeFunctionValue = {
 	value: (scope: any, arguments: {Value}) -> (...any),
 } & Value

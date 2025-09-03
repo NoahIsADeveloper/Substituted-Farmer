@@ -221,7 +221,6 @@ function Expression:PrimaryExpression(parser: Parser.Parser): (AST.Expression)
 
 		return {kind = AST.fromType.ArrayLiteral, value = value, range = {start, finish}}
 	elseif token.kind == Token.fromType.Function then
-		--TODO: might interfear with function definition statement
 		local start = parser:eat().range[1]
 		local parameters = {}
 
@@ -241,6 +240,49 @@ function Expression:PrimaryExpression(parser: Parser.Parser): (AST.Expression)
 			parameters = parameters,
 			range = {start, finish}
 		} :: AST.FunctionLiteral
+	elseif token.kind == Token.fromType.OpenBrace then
+		local start = parser:eat().range[1]
+		local result = {}
+
+		while parser:at().kind ~= Token.fromType.CloseBrace do
+			local key, value
+
+			if parser:at().kind == Token.fromType.Identifier then
+				--TODO: please get a constructor for ident literal
+				key = {kind = AST.fromType.IdentifierLiteral, value = parser:at().value, range = parser:eat().range}
+				parser:expect(Token.fromType.Assign)
+				value = parser:ParseExpression()
+			elseif parser:at().kind == Token.fromType.OpenBracket then
+				parser:eat()
+				key = parser:ParseExpression() :: any
+				parser:expect(AST.fromType.CloseBracket)
+				parser:expect(Token.fromType.Assign)
+				value = parser:ParseExpression()
+			else
+				error(`Expected identifier or open bracket for key, got {Token.fromKind[token.kind]}`)
+			end
+
+			--TODO: better error message
+			if not key then error("wuh") end
+
+			table.insert(result, {
+				kind = AST.fromType.Property,
+				key = key :: AST.Expression,
+				value = value :: AST.Expression,
+			} :: AST.Property)
+
+			if parser:at().kind ~= Token.fromType.Comma then
+				break
+			else
+				parser:eat()
+			end
+		end
+
+		return {
+			kind = AST.fromType.ObjectLiteral,
+			value = result,
+			range = {start},
+		} :: AST.ObjectLiteral
 	else
 		print(token)
 		error(`Unexpected token found during parsing, {Token.fromKind[token.kind]}`)
