@@ -22,6 +22,16 @@ function Statement:VariableDeclaration(node: AST.VariableDeclaration, data: Eval
 	return Values:None()
 end
 
+function Statement:ImportStatement(node: AST.ImportStatement, data: Evaluation.EvaluationData): (Values.NoneValue)
+	local environment = data.environment:Resolve()
+
+	for _, name in pairs(node.imports) do
+		
+	end
+
+	return Values:None()
+end
+
 function Statement:FunctionDeclaration(node: AST.FunctionDeclaration, data: Evaluation.EvaluationData): (Values.NoneValue)
 	local environment = data.environment
 	if node.global then
@@ -58,7 +68,7 @@ function Statement:IfStatement(node: AST.IfStatement, data: Evaluation.Evaluatio
 	return Values:None()
 end
 
-function Statement:TryStatement(node: AST.TryStatement, data: Evaluation.EvaluationData): (Values.Value)
+function Statement:TryStatement(node: AST.TryStatement, data: Evaluation.EvaluationData): (Values.NoneValue)
 	Evaluation.up(data)
 	local success: boolean, errorMessage: any = pcall(Evaluation.evaluateBody, node.body, data)
 	Evaluation.down(data)
