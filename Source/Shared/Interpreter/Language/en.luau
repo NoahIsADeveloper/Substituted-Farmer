@@ -20,7 +20,7 @@ return {
 		["!="] = "not equals",
 	},
 
-	["values.NoneValue"] = "none",
+	["values.NoneValue"] = "null",
 	["values.NumberValue"] = "number",
 	["values.StringValue"] = "string",
 	["values.BooleanValue"] = "boolean",
