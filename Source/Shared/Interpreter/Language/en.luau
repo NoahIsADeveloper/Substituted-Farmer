@@ -11,7 +11,13 @@ return {
 		["/"] = "division",
 		["*"] = "multiplication",
 		["%"] = "modulus",
-		["^"] = "exponentiation"
+		["^"] = "exponentiation",
+		[">"] = "greater than",
+		["<"] = "less than",
+		[">="] = "greater than or equals",
+		["<="] = "less than or equals",
+		["=="] = "equals",
+		["!="] = "not equals",
 	},
 
 	["values.NoneValue"] = "none",
