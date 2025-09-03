@@ -137,6 +137,10 @@ export type BreakStatement = {
 	kind: NodeKind,
 } & Statement
 
+export type ImportStatement = {
+	imports: {string},
+} & Statement
+
 export type Expression = {} & Statement
 
 export type BinaryExpression = {

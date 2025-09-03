@@ -149,6 +149,27 @@ function Statement:WhileStatement(parser: Parser.Parser): (AST.WhileStatement)
 	} :: any
 end
 
+function Statement:ImportStatement(parser: Parser.Parser): (AST.ImportStatement)
+	local start = parser:expect(Token.fromType.Import).range[1]
+	local finish
+	local imports = {}
+
+	local stopped = false
+	repeat
+		stopped = true
+		local import = parser:expect(Token.fromType.String)
+		table.insert(imports, import.value :: string)
+		finish = import.range[2]
+		if self:at().kind == Token.fromType.Comma then stopped = false; self:eat() end
+	until stopped
+
+	return {
+		kind = AST.fromType.ImportStatement,
+		imports = imports,
+		range = {start,finish},
+	}
+end
+
 function Statement:IfStatement(parser: Parser.Parser): (AST.IfStatement)
 	local start = parser:expect(Token.fromType.If).range[1]
 	parser:expect(Token.fromType.OpenParenthesis)
