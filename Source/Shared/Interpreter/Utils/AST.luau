@@ -63,7 +63,6 @@ local NodeKindsArray = {
 	"ArrayLiteral",
 	"FunctionLiteral",
 	"IdentifierLiteral",
-	"Property",
 } :: {[NodeKind]: NodeType}
 
 local FromType = {} :: {[NodeType]: NodeKind}
@@ -182,7 +181,7 @@ export type StringLiteral = {
 } & Literal
 
 export type ObjectLiteral = {
-	value: {Property},
+	value: {[any]: Expression?},
 } & Literal
 
 export type ArrayLiteral = {
@@ -196,11 +195,6 @@ export type FunctionLiteral = {
 
 export type IdentifierLiteral = {
 	value: string,
-} & Literal
-
-export type Property = {
-	value: Expression,
-	key: Expression, --TODO: as any?! huh?
 } & Literal
 
 local AST = {
