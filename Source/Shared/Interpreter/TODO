@@ -7,7 +7,7 @@ Return statement would also have the above issue
 
 Move definitions elsewhere for stuff in Utils
 Language/translations for error messages
-Parser lookup table/functions for parsing primary statements
+Parser lookup table/functions for parsing primary expressions and statements
 Evaluation data should be an object
 
 Function Declaration name changes
