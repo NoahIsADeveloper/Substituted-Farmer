@@ -181,7 +181,7 @@ export type StringLiteral = {
 } & Literal
 
 export type ObjectLiteral = {
-	value: {[any]: Expression?},
+	value: {Property},
 } & Literal
 
 export type ArrayLiteral = {
@@ -196,6 +196,11 @@ export type FunctionLiteral = {
 export type IdentifierLiteral = {
 	value: string,
 } & Literal
+
+export type Property = {
+	value: Expression,
+	key: Expression,
+}
 
 local AST = {
 	fromType = FromType,

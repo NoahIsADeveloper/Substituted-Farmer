@@ -23,7 +23,7 @@ function Interpreter.interpret(source: string, environment: Environment.Environm
 		result = Evaluation.run(ast, environment :: Environment.Environment)
 	end
 
-	local success: boolean?, errorMessage: string? = pcall(execute)
+	local success: boolean?, errorMessage: string? = execute()
 
 	if not success then warn(`Failed to execute {source} {debug.traceback(errorMessage, 0)}`) end
 	print("Tokens:", tokens)

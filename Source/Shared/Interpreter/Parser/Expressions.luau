@@ -255,7 +255,7 @@ function Expression:PrimaryExpression(parser: Parser.Parser): (AST.Expression)
 			elseif parser:at().kind == Token.fromType.OpenBracket then
 				parser:eat()
 				key = parser:ParseExpression() :: any
-				parser:expect(AST.fromType.CloseBracket)
+				parser:expect(Token.fromType.CloseBracket)
 				parser:expect(Token.fromType.Assign)
 				value = parser:ParseExpression()
 			else
@@ -278,10 +278,11 @@ function Expression:PrimaryExpression(parser: Parser.Parser): (AST.Expression)
 			end
 		end
 
+		local finish = parser:expect(Token.fromType.CloseBrace).range[2]
 		return {
 			kind = AST.fromType.ObjectLiteral,
 			value = result,
-			range = {start},
+			range = {start, finish},
 		} :: AST.ObjectLiteral
 	else
 		print(token)
