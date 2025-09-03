@@ -134,7 +134,7 @@ function Expression:CallMemberExpression(parser: Parser.Parser): (AST.Expression
 end
 
 function Expression:CallExpression(parser: Parser.Parser, caller: AST.Expression): (AST.Expression)
-	local start = parser:at().range[1]
+	local start = caller.range[1]
 	local finish
 	local result = {
 		kind = AST.fromType.CallExpression,
