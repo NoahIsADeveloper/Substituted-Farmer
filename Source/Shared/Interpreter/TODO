@@ -17,3 +17,5 @@ For Statement (cancer)
 Classes
 
 Compile to Luau
+
+rojo sourcemap --watch --output sourcemap.json & rojo serve
