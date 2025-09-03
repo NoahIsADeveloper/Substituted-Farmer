@@ -17,6 +17,7 @@ I/O System (prolly comes with librarys)
 Returns (list of exprs or smth)
 For Statement (cancer)
 Classes
+Unary (numeric and boolean)
 
 Compile to Luau
 
