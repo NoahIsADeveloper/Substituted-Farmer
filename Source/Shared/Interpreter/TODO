@@ -1,16 +1,26 @@
 # TODO
 
-objects
-Error messages/traceback should end execution without the use of the error function
+Test Objects Parser
+
+Break/Continue statement doesn't work if not in highest scope
+Return statement would also have the above issue
+
+Move definitions elsewhere for stuff in Utils
+Language/translations for error messages
+Parser lookup table/functions for parsing primary expressions and statements
+Evaluation data should be an object
 
 Function Declaration name changes
 -# (ident -> member expr/ident so local function object.myFunction() {} is valid syntax)
 
-Objects
-Library Import
+more Built in libraries + get remote libraries on client
 I/O System (prolly comes with librarys)
 Returns (list of exprs or smth)
 For Statement (cancer)
 Classes
+Unary (numeric and boolean)
 
 Compile to Luau
+Linter (in Luau for now)
+
+rojo sourcemap --watch --output sourcemap.json & rojo serve

@@ -5,14 +5,17 @@ local AST = require("../Utils/AST")
 local Values = require("../Utils/Runtime")
 local Evaluation = require("../Evaluation")
 
+local Libraries = require("../Utils/Libraries")
+
 local Statement = {}
 
 function Statement:VariableDeclaration(node: AST.VariableDeclaration, data: Evaluation.EvaluationData): (Values.NoneValue)
+	local environment = data.environment
 	if node.global then
-		data.environment = data.environment:Resolve()
+		environment = data.environment:Resolve()
 	end
 
-	data.environment:DeclareVariable(
+	environment:DeclareVariable(
 		node.identifier,
 		if node.value then Evaluation.evaluate(node.value, data) else Values:None(),
 		node.immutable
@@ -21,12 +24,29 @@ function Statement:VariableDeclaration(node: AST.VariableDeclaration, data: Eval
 	return Values:None()
 end
 
-function Statement:FunctionDeclaration(node: AST.FunctionDeclaration, data: Evaluation.EvaluationData): (Values.NoneValue)
-	if node.global then
-		data.environment = data.environment:Resolve()
+function Statement:ImportStatement(node: AST.ImportStatement, data: Evaluation.EvaluationData): (Values.NoneValue)
+	local environment = data.environment:Resolve()
+
+	for _, name in pairs(node.imports) do
+		local value, library = Libraries:Get(name)
+		if not library then continue end
+		environment:DeclareVariable(
+			library.symbol,
+			value,
+			true
+		)
 	end
 
-	data.environment:DeclareVariable(
+	return Values:None()
+end
+
+function Statement:FunctionDeclaration(node: AST.FunctionDeclaration, data: Evaluation.EvaluationData): (Values.NoneValue)
+	local environment = data.environment
+	if node.global then
+		environment = data.environment:Resolve()
+	end
+
+	environment:DeclareVariable(
 		node.name,
 		Values:Function(node.body, node.parameters),
 		false
@@ -56,7 +76,7 @@ function Statement:IfStatement(node: AST.IfStatement, data: Evaluation.Evaluatio
 	return Values:None()
 end
 
-function Statement:TryStatement(node: AST.TryStatement, data: Evaluation.EvaluationData): (Values.Value)
+function Statement:TryStatement(node: AST.TryStatement, data: Evaluation.EvaluationData): (Values.NoneValue)
 	Evaluation.up(data)
 	local success: boolean, errorMessage: any = pcall(Evaluation.evaluateBody, node.body, data)
 	Evaluation.down(data)
@@ -65,7 +85,12 @@ function Statement:TryStatement(node: AST.TryStatement, data: Evaluation.Evaluat
 		--TODO: node.alternate
 		Evaluation.up(data)
 		if node.symbol then
-			data.environment:DeclareVariable(node.symbol, Values:String(data.stack:Out(errorMessage)), true)
+			--TODO: CANCER
+			local message = if data.failData then data.failData.message else errorMessage
+			local location = if data.failData then data.failData.range else node.range
+			local name = if data.failData then data.failData.name else AST.fromKind[node.kind]
+
+			data.environment:DeclareVariable(node.symbol, Values:String(data.stack:Out(message, location, name)), true)
 		end
 		Evaluation.evaluateBody(node.alternate, data)
 		Evaluation.down(data)
@@ -88,7 +113,6 @@ function Statement:WhileStatement(node: AST.WhileStatement, data: Evaluation.Eva
 	end
 
 	if node.alternate then
-		--TODO: node.alternate
 		Evaluation.up(data)
 		Evaluation.evaluateBody(node.alternate, data)
 		Evaluation.down(data)
