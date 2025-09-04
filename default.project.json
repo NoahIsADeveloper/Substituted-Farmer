@@ -1,5 +1,7 @@
 {
 	"name": "Substituted Farmer",
+	"placeId": 105385856524580,
+	"gameId": 8630834412,
 	"emitLegacyScripts": false,
 
 	"tree": {
