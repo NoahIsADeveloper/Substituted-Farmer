@@ -2,6 +2,7 @@
 --!optimize 2
 
 local HttpService = game:GetService("HttpService")
+local RunService = game:GetService("RunService")
 
 local AST = require("./AST")
 local Runtime = require("./Runtime")
@@ -30,13 +31,17 @@ function Libraries:Get(name: string): (Runtime.Value, Library?)
 	local lookup = Lookup[name]
 
 	if lookup then
-		local library = HttpService:GetAsync(lookup, true)
-		if not library then return Runtime:None() end
-		local result = HttpService:JSONDecode(library) :: Library
+		if RunService:IsServer() then
+			local library = HttpService:GetAsync(lookup, true)
+			if not library then return Runtime:None() end
+			local result = HttpService:JSONDecode(library) :: Library
 
-		--TODO: evaluation.evaluate with evaluation data when the class for that gets made
-		local scope = Environment.new()
-		return Evaluation.run(result.tree :: any, scope), library
+			--TODO: evaluation.evaluate with evaluation data when the class for that gets made
+			local scope = Environment.new()
+			return Evaluation.run(result.tree :: any, scope), library
+		else
+			--TODO: ask the server for the library instead
+		end
 	elseif moduleScript and moduleScript:IsA("ModuleScript") then
 		--TODO: error safety
 		local result = require(moduleScript) :: any
