@@ -9,7 +9,7 @@ local Interpreter = require(Shared:FindFirstChild("Interpreter")) :: typeof(requ
 local Source = [[
 import "example"
 
-example.hello
+example.goodbye
 ]]
 
 Interpreter.interpret(Source)
