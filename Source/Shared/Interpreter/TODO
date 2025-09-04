@@ -21,5 +21,6 @@ Classes
 Unary (numeric and boolean)
 
 Compile to Luau
+Linter (in Luau for now)
 
 rojo sourcemap --watch --output sourcemap.json & rojo serve
