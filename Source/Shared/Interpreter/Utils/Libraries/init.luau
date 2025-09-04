@@ -17,7 +17,7 @@ export type Library = {
 	symbol: string,
 	author: string,
 	version: string,
-	tree: AST.Expression,
+	tree: AST.Expression | Runtime.Value,
 }
 
 local BuiltIn = script:FindFirstChild("BuiltIn")
