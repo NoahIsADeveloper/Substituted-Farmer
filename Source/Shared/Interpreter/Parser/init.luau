@@ -99,7 +99,7 @@ function Parser:ParseArguments(): ({AST.Statement})
 		until stopped
 	end
 
-		self:expect(Token.fromType.CloseParenthesis)
+	self:expect(Token.fromType.CloseParenthesis)
 	return arguments
 end
 
@@ -145,6 +145,8 @@ function Parser:ParseStatement(fails: boolean?): (AST.Statement)
 		} :: AST.BreakStatement
 	elseif self:at().kind == Token.fromType.Try then
 		return Statements:TryStatement(self)
+	elseif self:at().kind == Token.fromType.Import then
+		return Statements:ImportStatement(self)
 	end
 
 	if fails then error(`i love oranges`) end

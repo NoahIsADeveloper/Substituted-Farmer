@@ -63,7 +63,6 @@ local NodeKindsArray = {
 	"ArrayLiteral",
 	"FunctionLiteral",
 	"IdentifierLiteral",
-	"Property",
 } :: {[NodeKind]: NodeType}
 
 local FromType = {} :: {[NodeType]: NodeKind}
@@ -137,6 +136,10 @@ export type BreakStatement = {
 	kind: NodeKind,
 } & Statement
 
+export type ImportStatement = {
+	imports: {string},
+} & Statement
+
 export type Expression = {} & Statement
 
 export type BinaryExpression = {
@@ -153,7 +156,7 @@ export type BooleanExpression = {
 
 export type CallExpression = {
 	arguments: {IdentifierLiteral},
-	caller: Expression, --TODO: is this accurate?
+	caller: Expression,
 } & Expression
 
 export type MemberExpression = {
@@ -195,9 +198,9 @@ export type IdentifierLiteral = {
 } & Literal
 
 export type Property = {
-	value: Expression?,
-	key: any, --TODO: as any?! huh?
-} & Literal
+	value: Expression,
+	key: Expression,
+}
 
 local AST = {
 	fromType = FromType,

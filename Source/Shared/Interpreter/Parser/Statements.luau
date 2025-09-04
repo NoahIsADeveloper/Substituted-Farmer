@@ -113,13 +113,14 @@ function Statement:VariableCompoundAssignment(parser: Parser.Parser): (AST.Varia
 	local assignment = parser:expect(Token.fromType.CompoundAssign)
 	local value = parser:ParseExpression()
 
+	--TODO: better ident get
 	return {
 		kind = AST.fromType.VariableAssignment,
 		range = {identifier.range[1], value.range[2]},
 		identifier = identifier.value,
 		value = {
 			kind = AST.fromType.BinaryExpression,
-			left = {kind = AST.fromType.Identifier, value = identifier.value, range = identifier.range} :: any,
+			left = {kind = AST.fromType.IdentifierLiteral, value = identifier.value, range = identifier.range} :: any,
 			right = value,
 			operator = (assignment.value :: string):sub(1, 1) :: string,
 		} :: AST.BinaryExpression,
@@ -146,6 +147,27 @@ function Statement:WhileStatement(parser: Parser.Parser): (AST.WhileStatement)
 		alternate = alternate,
 		range = {start, finish}
 	} :: any
+end
+
+function Statement:ImportStatement(parser: Parser.Parser): (AST.ImportStatement)
+	local start = parser:expect(Token.fromType.Import).range[1]
+	local finish
+	local imports = {}
+
+	local stopped = false
+	repeat
+		stopped = true
+		local import = parser:expect(Token.fromType.String)
+		table.insert(imports, import.value :: string)
+		finish = import.range[2]
+		if parser:at().kind == Token.fromType.Comma then stopped = false; parser:eat() end
+	until stopped
+
+	return {
+		kind = AST.fromType.ImportStatement,
+		imports = imports,
+		range = {start,finish},
+	}
 end
 
 function Statement:IfStatement(parser: Parser.Parser): (AST.IfStatement)

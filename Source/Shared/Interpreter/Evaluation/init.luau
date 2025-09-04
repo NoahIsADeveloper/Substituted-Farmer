@@ -16,6 +16,7 @@ local Evaluation = {}
 export type EvaluationData = {
 	environment: Environment.Environment,
 	stack: Stack.Stack,
+	failData: {range: {number}, message: string, name: string}?,
 }
 
 local Evaluators = {
@@ -31,6 +32,21 @@ local Evaluators = {
 	end,
 	[ASTTypes.ArrayLiteral] = function(node: AST.ArrayLiteral, data)
 		return Values:Array(node.value)
+	end,
+	[ASTTypes.ObjectLiteral] = function(node: AST.ObjectLiteral, data)
+		local result = {
+			kind = Values.fromType.ObjectValue,
+			value = {},
+		}
+
+		for _, property in pairs(node.value) do
+			local key = Evaluation["evaluate"](property.key, data)
+			local value = Evaluation["evaluate"](property.value, data)
+
+			result.value[key.value] = value
+		end
+
+		return result
 	end,
 	[ASTTypes.FunctionLiteral] = function(node: AST.FunctionLiteral, data)
 		return Values:Function(node.value, node.parameters)
@@ -57,6 +73,9 @@ local Evaluators = {
 	end,
 	[ASTTypes.TryStatement] = function(node: AST.TryStatement, data)
 		return Statements:TryStatement(node, data)
+	end,
+	[ASTTypes.ImportStatement] = function(node: AST.ImportStatement, data)
+		return Statements:ImportStatement(node, data)
 	end,
 
 	-- // Expressions
@@ -89,6 +108,15 @@ function Evaluation.down(data: EvaluationData)
 	data.environment = scope
 end
 
+function Evaluation.fail(data: EvaluationData, message: string, node: AST.Statement)
+	data.failData = {
+		range = node.range,
+		message = message,
+		name = AST.fromKind[node.kind] :: string,
+	}
+	error(message)
+end
+
 function Evaluation.evaluateBody(body: {AST.Statement}, data: EvaluationData): (Values.Value)
 	local lastValue = Values:None()
 
@@ -119,14 +147,19 @@ function Evaluation.run(node: AST.Program, environment: Environment.Environment)
 	local evaluationData = {
 		environment = environment,
 		stack = stack,
-	}
+	} :: EvaluationData
 
 	local success, result = pcall(function()
 		return Evaluation.evaluate(node, evaluationData)
 	end)
 
 	if not success then
-		warn(stack:Out(result :: any))
+		--TODO: CANCER
+		local message = if evaluationData.failData then evaluationData.failData.message else result :: any
+		local location = if evaluationData.failData then evaluationData.failData.range else node.range
+		local name = if evaluationData.failData then evaluationData.failData.name else AST.fromKind[node.kind]
+
+		warn(stack:Out(message, location, name))
 		return Values:None()
 	end
 

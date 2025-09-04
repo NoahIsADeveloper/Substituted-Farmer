@@ -46,6 +46,10 @@ export type ArrayValue = {
 	value: {Value},
 } & Value
 
+export type ObjectValue = {
+	value: {[Value]: Value},
+} & Value
+
 export type NativeFunctionValue = {
 	value: (scope: any, arguments: {Value}) -> (...any),
 } & Value
@@ -121,19 +125,30 @@ function Runtime:Array(value: {any}): (ArrayValue)
 	}
 end
 
---TODO: better value definition
-function Runtime:NativeFunction(value: (...any) -> (...any)): (NativeFunctionValue)
+function Runtime:Object(value: {[any]: any}): (ObjectValue)
+	local result = {
+		kind = FromType.ObjectValue,
+		value = {}
+	}
+
+	for index, value in pairs(value) do
+		result.value[index] = value
+	end
+
+	return result
+end
+
+function Runtime:NativeFunction(value: (scope: any, arguments: {Value}) -> (...any)): (NativeFunctionValue)
 	return {
 		kind = FromType.NativeFunctionValue,
 		value = value,
 	}
 end
 
---TODO: value: AST.Statement
-function Runtime:Function(value: any, parameters: {string}): (NativeFunctionValue)
+function Runtime:Function(value: {AST.Statement}, parameters: {string}): (NativeFunctionValue)
 	return {
 		kind = FromType.FunctionValue,
-		value = value,
+		value = value :: any,
 		parameters = parameters,
 	}
 end
