@@ -33,6 +33,21 @@ local Evaluators = {
 	[ASTTypes.ArrayLiteral] = function(node: AST.ArrayLiteral, data)
 		return Values:Array(node.value)
 	end,
+	[ASTTypes.ObjectLiteral] = function(node: AST.ObjectLiteral, data)
+		local result = {
+			kind = Values.fromType.ObjectValue,
+			value = {},
+		}
+
+		for _, property in pairs(node.value) do
+			local key = Evaluation["evaluate"](property.key, data)
+			local value = Evaluation["evaluate"](property.value, data)
+
+			result.value[key.value] = value
+		end
+
+		return result
+	end,
 	[ASTTypes.FunctionLiteral] = function(node: AST.FunctionLiteral, data)
 		return Values:Function(node.value, node.parameters)
 	end,
