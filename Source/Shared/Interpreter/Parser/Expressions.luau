@@ -170,6 +170,9 @@ function Expression:MemberExpression(parser: Parser.Parser): (AST.Expression)
 				--TODO: error
 				error(`hey! that's not right!`)
 			end
+
+			--TODO: Cancer! Turns the identifier into a string if it's not computed...
+			property.kind = AST.fromType.StringLiteral
 		else
 			computed = true
 			property = parser:ParseExpression()
@@ -249,7 +252,7 @@ function Expression:PrimaryExpression(parser: Parser.Parser): (AST.Expression)
 
 			if parser:at().kind == Token.fromType.Identifier then
 				--TODO: please get a constructor for ident literal
-				key = {kind = AST.fromType.IdentifierLiteral, value = parser:at().value, range = parser:eat().range}
+				key = {kind = AST.fromType.StringLiteral, value = parser:at().value, range = parser:eat().range}
 				parser:expect(Token.fromType.Assign)
 				value = parser:ParseExpression()
 			elseif parser:at().kind == Token.fromType.OpenBracket then
