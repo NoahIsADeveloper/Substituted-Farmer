@@ -160,7 +160,7 @@ function Statement:ImportStatement(parser: Parser.Parser): (AST.ImportStatement)
 		local import = parser:expect(Token.fromType.String)
 		table.insert(imports, import.value :: string)
 		finish = import.range[2]
-		if self:at().kind == Token.fromType.Comma then stopped = false; self:eat() end
+		if parser:at().kind == Token.fromType.Comma then stopped = false; parser:eat() end
 	until stopped
 
 	return {

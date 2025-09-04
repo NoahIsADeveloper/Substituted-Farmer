@@ -59,6 +59,9 @@ local Evaluators = {
 	[ASTTypes.TryStatement] = function(node: AST.TryStatement, data)
 		return Statements:TryStatement(node, data)
 	end,
+	[ASTTypes.ImportStatement] = function(node: AST.ImportStatement, data)
+		return Statements:ImportStatement(node, data)
+	end,
 
 	-- // Expressions
 	[AST.fromType.BinaryExpression] = function(node: AST.BinaryExpression, data)

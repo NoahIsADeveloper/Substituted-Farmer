@@ -5,6 +5,8 @@ local AST = require("../Utils/AST")
 local Values = require("../Utils/Runtime")
 local Evaluation = require("../Evaluation")
 
+local Libraries = require("../Utils/Libraries")
+
 local Statement = {}
 
 function Statement:VariableDeclaration(node: AST.VariableDeclaration, data: Evaluation.EvaluationData): (Values.NoneValue)
@@ -26,7 +28,13 @@ function Statement:ImportStatement(node: AST.ImportStatement, data: Evaluation.E
 	local environment = data.environment:Resolve()
 
 	for _, name in pairs(node.imports) do
-		
+		local value, library = Libraries:Get(name)
+		if not library then continue end
+		environment:DeclareVariable(
+			library.symbol,
+			value,
+			true
+		)
 	end
 
 	return Values:None()
