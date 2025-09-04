@@ -125,6 +125,19 @@ function Runtime:Array(value: {any}): (ArrayValue)
 	}
 end
 
+function Runtime:Object(value: {[any]: any}): (ObjectValue)
+	local result = {
+		kind = FromType.ObjectValue,
+		value = {}
+	}
+
+	for index, value in pairs(value) do
+		result.value[index] = value
+	end
+
+	return result
+end
+
 function Runtime:NativeFunction(value: (scope: any, arguments: {Value}) -> (...any)): (NativeFunctionValue)
 	return {
 		kind = FromType.NativeFunctionValue,
