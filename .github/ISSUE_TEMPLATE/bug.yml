@@ -20,7 +20,7 @@ body:
       description: Tell us how we can recreate the issue.
       placeholder: |
         1. Open the game
-        2. Place a building
+        2. Write some code
         3. Game freezes
     validations:
       required: true
@@ -39,19 +39,12 @@ body:
       options:
         - label: Computer
         - label: Phone
-  # - type: input
-  #   id: version
-  #   attributes:
-  #     label: Version ID
-  #     placeholder: e.g. '491'
-  #   validations:
-  #     required: true
   - type: checkboxes
     id: agreement
     attributes:
       label: Submission
       options:
-        - label: I have checked the latest release (https://github.com/NoahIsADeveloper/Oceanworks/releases) to make sure my issue has not been fixed.
+        - label: I have checked the latest release (https://github.com/NoahIsADeveloper/Substituted-Farmer/releases) to make sure my issue has not been fixed.
           required: true
         - label: I have searched the closed and open issues to make sure that this problem has not already been reported.
           required: true
