@@ -1,4 +1,3 @@
-# default.project.json
+# Substituted Farmer
 
-Change name. Possbily add placeId and gameId.
-Also bug template has oceanworks instead of this github repo
+wow epic (this todo)
