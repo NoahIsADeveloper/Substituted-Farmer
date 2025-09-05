@@ -64,7 +64,7 @@ return if RunService:IsClient() then
 	{
 		name = "Input Library",
 		symbol = "input",
-		version = "1.0.0",
+		version = "v1.0.0",
 		author = "NoahIsADeveloper",
 		tree = Runtime:Object({
 			inputBegan = Runtime:NativeFunction(function(data, arguments): (...any)
