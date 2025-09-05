@@ -1,7 +1,5 @@
 # TODO
 
-Test Objects Parser
-
 Break/Continue statement doesn't work if not in highest scope
 Return statement would also have the above issue
 
@@ -20,7 +18,7 @@ For Statement (cancer)
 Classes
 Unary (numeric and boolean)
 
-Compile to Luau
-Linter (in Luau for now)
+Compile to Zig + LuaU
+Linter (in Luau for now so people can run it)
 
 rojo sourcemap --watch --output sourcemap.json & rojo serve
