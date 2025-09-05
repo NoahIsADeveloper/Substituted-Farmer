@@ -1,0 +1,13 @@
+{
+	"name": "Example Library",
+	"symbol": "example",
+	"version": "1.0.0",
+	"author": "NoahIsADeveloper",
+	"tree": {
+		"value": {
+			"hello": {"value": "Hello!", "kind": 3},
+			"goodbye": {"value": "Goodbye!", "kind": 3}
+		},
+		"kind": 6
+	}
+}

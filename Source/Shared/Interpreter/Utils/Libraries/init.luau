@@ -4,21 +4,20 @@
 local HttpService = game:GetService("HttpService")
 local RunService = game:GetService("RunService")
 
-local AST = require("./AST")
 local Runtime = require("./Runtime")
-local Evaluation = require("../Evaluation")
-local Environment = require("../Evaluation/Environment")
 
 local Cache = {} :: {[string]: Runtime.Value}
 local Libraries = {}
 
-local Lookup = {} :: {[string]: string}
+local Lookup = {
+	["example-remote"] = "https://raw.githubusercontent.com/NoahIsADeveloper/Substituted-Farmer/refs/heads/main/Source/Shared/Interpreter/Utils/Libraries/Example.json"
+} :: {[string]: string}
 export type Library = {
 	name: string,
 	symbol: string,
 	author: string,
 	version: string,
-	tree: AST.Expression | Runtime.Value,
+	tree: Runtime.Value,
 }
 
 local BuiltIn = script:FindFirstChild("BuiltIn")
@@ -36,9 +35,7 @@ function Libraries:Get(name: string): (Runtime.Value, Library?)
 			if not library then return Runtime:None() end
 			local result = HttpService:JSONDecode(library) :: Library
 
-			--TODO: evaluation.evaluate with evaluation data when the class for that gets made
-			local scope = Environment.new()
-			return Evaluation.run(result.tree :: any, scope), library
+			return result.tree, library
 		else
 			--TODO: ask the server for the library instead
 		end
