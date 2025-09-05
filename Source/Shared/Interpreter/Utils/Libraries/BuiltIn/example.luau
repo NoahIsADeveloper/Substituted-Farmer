@@ -1,3 +1,6 @@
+--!strict
+--!optimize 2
+
 local Library = require("../")
 local Runtime = require("../../Runtime")
 
