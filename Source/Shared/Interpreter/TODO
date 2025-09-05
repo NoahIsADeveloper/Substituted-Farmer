@@ -1,7 +1,5 @@
 # TODO
 
-Test Objects Parser
-
 Break/Continue statement doesn't work if not in highest scope
 Return statement would also have the above issue
 
@@ -13,14 +11,14 @@ Evaluation data should be an object
 Function Declaration name changes
 -# (ident -> member expr/ident so local function object.myFunction() {} is valid syntax)
 
-more Built in libraries + get remote libraries on client
+more Built in libraries + remote library rate limit
 I/O System (prolly comes with librarys)
 Returns (list of exprs or smth)
 For Statement (cancer)
 Classes
 Unary (numeric and boolean)
 
-Compile to Luau
-Linter (in Luau for now)
+Compile to Zig + LuaU
+Linter (in Luau for now so people can run it)
 
 rojo sourcemap --watch --output sourcemap.json & rojo serve

@@ -51,12 +51,12 @@ export type ObjectValue = {
 } & Value
 
 export type NativeFunctionValue = {
-	value: (scope: any, arguments: {Value}) -> (...any),
+	value: (data: any, parameters: {Value}) -> (...any),
 } & Value
 
 export type FunctionValue = {
 	value: {AST.Statement},
-	arguments: {string},
+	parameters: {string},
 } & Value
 
 local ValueKindsArray = {

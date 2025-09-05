@@ -7,9 +7,19 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Interpreter = require(Shared:FindFirstChild("Interpreter")) :: typeof(require("./Shared/Interpreter"))
 
 local Source = [[
-import "example"
+import "input"
 
-example.goodbye
+input.inputBegan(function (key) {
+	if (key == "W") {
+		print("Forward")
+	} else if (key == "S") {
+		print("Backwards")
+	} else if (key == "A") {
+		print("Left")
+	} else if (key == "D") {
+		print("Right")
+	}
+})
 ]]
 
 Interpreter.interpret(Source)

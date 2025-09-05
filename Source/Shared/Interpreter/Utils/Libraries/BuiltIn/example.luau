@@ -1,10 +1,13 @@
+--!strict
+--!optimize 2
+
 local Library = require("../")
 local Runtime = require("../../Runtime")
 
 return {
 	name = "Example Library",
 	symbol = "example",
-	version = "1.0.0",
+	version = "v1.0.0",
 	author = "NoahIsADeveloper",
 	tree = Runtime:Object({
 		hello = Runtime:String("Hello!"),

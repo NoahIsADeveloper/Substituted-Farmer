@@ -16,6 +16,15 @@ function Expression:BinaryExpression(node: AST.BinaryExpression, data: Evaluatio
 	local call = Operators[operator]
 
 	if not call then Evaluation.fail(data, `Operator {operator} is not a valid operator`, node); return Values:None() end
+
+	if operator == "==" or operator == "!=" then
+		if left.kind == right.kind then
+			return Values:Boolean(call(left.value, right.value))
+		else
+			return Values:Boolean(false)
+		end
+	end
+
 	if left.kind == right.kind then
 		if left.kind == Values.fromType.NumberValue then
 			local result = call(left.value, right.value)

@@ -6,7 +6,7 @@ local RunService = game:GetService("RunService")
 
 local Runtime = require("./Runtime")
 
-local Cache = {} :: {[string]: Runtime.Value}
+local Cache = {} :: {[string]: Library}
 local Libraries = {}
 
 local Lookup = {
@@ -20,33 +20,42 @@ export type Library = {
 	tree: Runtime.Value,
 }
 
+local RemoteFunction = script:FindFirstChild("RemoteFunction") :: RemoteFunction
 local BuiltIn = script:FindFirstChild("BuiltIn")
 
 function Libraries:Get(name: string): (Runtime.Value, Library?)
 	name = name:lower()
 
-	if Cache[name] then return Cache[name] end
+	if Cache[name] then return Cache[name].tree, Cache[name] end
 	local moduleScript = BuiltIn:FindFirstChild(name)
 	local lookup = Lookup[name]
 
 	if lookup then
-		if RunService:IsServer() then
-			local library = HttpService:GetAsync(lookup, true)
-			if not library then return Runtime:None() end
-			local result = HttpService:JSONDecode(library) :: Library
+		local library = if RunService:IsServer() then HttpService:GetAsync(lookup, true) else RemoteFunction:InvokeServer(name)
+		if not library then return Runtime:None() end
+		local result = HttpService:JSONDecode(library) :: Library
 
-			return result.tree, library
-		else
-			--TODO: ask the server for the library instead
-		end
+		Cache[name] = result
+		return result.tree, result
 	elseif moduleScript and moduleScript:IsA("ModuleScript") then
 		--TODO: error safety
 		local result = require(moduleScript) :: any
-		Cache[name] = result.tree
+		Cache[name] = result
 		return result.tree, result
 	end
 
 	return Runtime:None()
+end
+
+function Libraries.init()
+	if RunService:IsClient() then return end
+
+	function RemoteFunction.OnServerInvoke(player, name: string): (Library?)
+		local lookup = Lookup[name]
+		if not lookup then return nil end
+
+		return HttpService:GetAsync(lookup, true)
+	end
 end
 
 return Libraries
