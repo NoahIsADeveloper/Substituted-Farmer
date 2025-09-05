@@ -22,6 +22,7 @@ export type Stack = typeof(setmetatable({} :: {
 	Peek: (self: Stack) -> (Frame?),
 	Depth: (self: Stack) -> (number),
 	CloneStack: (self: Stack) -> ({Frame}),
+	Clone: (self: Stack) -> (Stack),
 	Out: (self: Stack, message: string, location: {number}, name: string) -> (string),
 
 	new: () -> (Stack)
@@ -53,6 +54,13 @@ end
 
 function Stack:CloneStack(): ({Frame})
 	return table.clone(self.stack)
+end
+
+function Stack:Clone(): (Stack)
+	local stack = Stack.new()
+	stack.stack = self:CloneStack()
+
+	return stack
 end
 
 function Stack:Out(message: any, location: {number}, name: string): (string)
